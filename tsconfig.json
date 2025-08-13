@@ -1,0 +1,41 @@
+{
+  // Konfigurasi TypeScript untuk proyek Remix + Cloudflare Workers
+  "include": [
+    "worker-configuration.d.ts",
+    "env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/.server/**/*.ts",
+    "**/.server/**/*.tsx",
+    "**/.client/**/*.ts",
+    "**/.client/**/*.tsx"
+  ],
+  // Exclude compiled Remix build output so incremental typecheck doesn't compare
+  // stale emitted route types with current source (prevents TS2322 on functions handler)
+  "exclude": ["build"],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    // Batasi daftar types ke paket yang memang expose type roots global.
+    // @remix-run/cloudflare tidak perlu disebut di sini karena type diekspor via import, bukan global.
+    "types": ["@cloudflare/workers-types", "vite/client", "vitest", "vitest/globals"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "strict": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"],
+      "@/*": ["./app/*"]
+    },
+    // typeRoots dihapus agar resolusi default Node/TS bekerja (hindari masking). Jika butuh deklarasi custom, tambahkan kembali.
+    // Remix build handles emission
+    "noEmit": true
+  }
+}

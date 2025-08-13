@@ -1,0 +1,280 @@
+
+ ⛅️ wrangler 3.114.13 (update available 4.28.1)
+-----------------------------------------------
+
+🌀 Executing on local database inti-santri (b42e974f-4b45-4edc-92e5-553b7c4cbf3b) from .wrangler\state\v3\d1:
+🌀 To execute on your remote database, add a --remote flag to your wrangler command.
+🚣 4 commands executed successfully.
+[
+  {
+    "results": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "author_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "title",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "description",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "price",
+        "type": "INTEGER",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "file_url",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "created_at",
+        "type": "INTEGER",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "content_type",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "'text'",
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "content",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "status",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "'draft'",
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "slug",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "featured_image",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "tags",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "category",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 14,
+        "name": "published_at",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 15,
+        "name": "updated_at",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 16,
+        "name": "view_count",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "0",
+        "pk": 0
+      },
+      {
+        "cid": 17,
+        "name": "download_count",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "0",
+        "pk": 0
+      },
+      {
+        "cid": 18,
+        "name": "is_free",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "0",
+        "pk": 0
+      },
+      {
+        "cid": 19,
+        "name": "last_status_changed_at",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 20,
+        "name": "deleted_at",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "seq": 0,
+        "name": "idx_karya_slug",
+        "unique": 0,
+        "origin": "c",
+        "partial": 0
+      },
+      {
+        "seq": 1,
+        "name": "idx_karya_status_deleted_author",
+        "unique": 0,
+        "origin": "c",
+        "partial": 0
+      },
+      {
+        "seq": 2,
+        "name": "idx_karya_author",
+        "unique": 0,
+        "origin": "c",
+        "partial": 0
+      },
+      {
+        "seq": 3,
+        "name": "sqlite_autoindex_karya_1",
+        "unique": 1,
+        "origin": "pk",
+        "partial": 0
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  },
+  {
+    "results": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "karya_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "type",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "payload_json",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": "null",
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "created_at",
+        "type": "INTEGER",
+        "notnull": 1,
+        "dflt_value": "null",
+        "pk": 0
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "id": "test-event-1"
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  }
+]

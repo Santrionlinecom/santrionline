@@ -1,0 +1,212 @@
+// ImageGrid Component
+// app/components/ImageGrid.tsx
+
+import { useState } from 'react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '~/components/ui/button';
+
+interface Image {
+  id: string;
+  url: string;
+  width: number | null;
+  height: number | null;
+  idx: number | null;
+}
+
+interface ImageGridProps {
+  images: Image[];
+  maxHeight?: number;
+}
+
+export default function ImageGrid({ images, maxHeight = 400 }: ImageGridProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  if (!images || images.length === 0) return null;
+
+  // Sort images by index
+  const sortedImages = [...images].sort((a, b) => (a.idx || 0) - (b.idx || 0));
+
+  const openLightbox = (index: number) => {
+    setCurrentIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? sortedImages.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === sortedImages.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') goToPrevious();
+    if (e.key === 'ArrowRight') goToNext();
+  };
+
+  // Grid layout logic
+  const getGridClass = () => {
+    switch (sortedImages.length) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-2';
+      case 3:
+        return 'grid-cols-2 grid-rows-2';
+      case 4:
+        return 'grid-cols-2 grid-rows-2';
+      default:
+        return 'grid-cols-2';
+    }
+  };
+
+  const getImageClass = (index: number) => {
+    if (sortedImages.length === 1) {
+      return 'col-span-1 row-span-1 aspect-[4/3]';
+    }
+    if (sortedImages.length === 2) {
+      return 'col-span-1 row-span-1 aspect-[4/3]';
+    }
+    if (sortedImages.length === 3) {
+      if (index === 0) {
+        return 'col-span-1 row-span-2 aspect-[3/4]';
+      }
+      return 'col-span-1 row-span-1 aspect-[4/3]';
+    }
+    if (sortedImages.length === 4) {
+      return 'col-span-1 row-span-1 aspect-square';
+    }
+    return 'col-span-1 row-span-1 aspect-[4/3]';
+  };
+
+  return (
+    <>
+      {/* Grid */}
+      <div 
+        className={`grid gap-2 ${getGridClass()}`}
+        style={{ maxHeight }}
+      >
+        {sortedImages.map((image, index) => (
+          <div
+            key={image.id}
+            className={`relative overflow-hidden rounded-lg cursor-pointer group ${getImageClass(index)}`}
+            onClick={() => openLightbox(index)}
+          >
+            <img
+              src={image.url}
+              alt={`Image ${index + 1}`}
+              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
+            
+            {/* Overlay on hover */}
+            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            
+            {/* More images indicator */}
+            {index === 3 && sortedImages.length > 4 && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <span className="text-white text-2xl font-bold">
+                  +{sortedImages.length - 4}
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={closeLightbox}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+        >
+          {/* Close button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute top-4 right-4 text-white hover:bg-white/20"
+            onClick={closeLightbox}
+          >
+            <X className="w-6 h-6" />
+          </Button>
+
+          {/* Navigation */}
+          {sortedImages.length > 1 && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrevious();
+                }}
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+              >
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+            </>
+          )}
+
+          {/* Current image */}
+          <img
+            src={sortedImages[currentIndex]?.url}
+            alt={`Image ${currentIndex + 1}`}
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {/* Image counter */}
+          {sortedImages.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {currentIndex + 1} / {sortedImages.length}
+            </div>
+          )}
+
+          {/* Thumbnails */}
+          {sortedImages.length > 1 && (
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex space-x-2 max-w-md overflow-x-auto">
+              {sortedImages.map((image, index) => (
+                <button
+                  key={image.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentIndex(index);
+                  }}
+                  className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden ${
+                    index === currentIndex ? 'border-white' : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={image.url}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
+}

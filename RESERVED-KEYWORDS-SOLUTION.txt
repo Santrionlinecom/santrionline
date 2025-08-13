@@ -1,0 +1,47 @@
+============================================
+   SOLUTION: near "transaction": syntax error
+============================================
+
+❌ PROBLEM:
+SQL reserved keywords cause syntax errors:
+- "transaction" is a reserved keyword
+- "order" is also a reserved keyword
+- D1 is strict about reserved words
+
+✅ SOLUTIONS APPLIED:
+
+1. RESERVED KEYWORD FIXES:
+   ❌ transaction  →  ✅ transactions
+   ❌ "order"      →  ✅ orders
+
+2. TABLE NAMES CHANGED:
+   - CREATE TABLE transaction  → CREATE TABLE transactions
+   - CREATE TABLE "order"      → CREATE TABLE orders
+
+✅ FILES UPDATED:
+1. setup-simple.sql         (Fixed both keywords)
+2. fix-transaction-keyword.sql (Specific fix)
+3. fix-transaction-error.bat   (Automated fix)
+4. verify-keywords-fixed.bat   (Verification)
+
+✅ COMMON SQL RESERVED KEYWORDS TO AVOID:
+- transaction, order, select, insert, update, delete
+- user, group, table, index, view, database
+- where, from, join, on, and, or, not
+- primary, key, foreign, references
+
+✅ SAFE ALTERNATIVES:
+- transaction  → transactions, user_transactions
+- order        → orders, user_orders  
+- user         → users, app_user (but "user" usually works)
+- group        → groups, user_groups
+
+✅ HOW TO RUN THE FIX:
+1. fix-transaction-error.bat    (Creates tables with correct names)
+2. verify-keywords-fixed.bat    (Confirms everything works)
+3. wrangler d1 execute santri-db --local --file=setup-simple.sql
+
+✅ RESULT:
+- No more "near transaction: syntax error"
+- All tables created with safe names
+- Database fully functional

@@ -1,0 +1,178 @@
+/* CSS khusus untuk print sertifikat dan raport */
+@media print {
+  .certificate-container {
+    width: 210mm;
+    height: 297mm; /* A4 size */
+    margin: 0;
+    padding: 20mm;
+    box-sizing: border-box;
+    page-break-after: always;
+  }
+
+  .certificate-front {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #0066cc;
+    padding: 40px;
+    position: relative;
+  }
+
+  .certificate-back {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    border: 2px solid #0066cc;
+  }
+
+  .certificate-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .certificate-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0066cc;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .certificate-recipient {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    display: inline-block;
+    min-width: 300px;
+  }
+
+  .certificate-description {
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+    margin: 30px 0;
+  }
+
+  .certificate-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: 60px;
+    font-size: 14px;
+  }
+
+  .signature-section {
+    text-align: center;
+  }
+
+  .signature-line {
+    border-top: 1px solid #000;
+    width: 150px;
+    margin: 80px auto 10px;
+  }
+
+  .qr-code-section {
+    text-align: center;
+  }
+
+  .report-section {
+    margin-bottom: 25px;
+  }
+
+  .report-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0066cc;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  .progress-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .progress-table th,
+  .progress-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .progress-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+
+  .achievement-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }
+
+  .achievement-score {
+    font-weight: bold;
+    color: #0066cc;
+  }
+
+  .report-footer {
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+    margin-top: 30px;
+  }
+
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Responsive adjustments for screen preview */
+@media screen and (max-width: 768px) {
+  .certificate-container {
+    width: 100%;
+    height: auto;
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .certificate-title {
+    font-size: 20px;
+  }
+
+  .certificate-recipient {
+    font-size: 18px;
+    min-width: 200px;
+  }
+
+  .certificate-description {
+    font-size: 14px;
+  }
+
+  .certificate-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}

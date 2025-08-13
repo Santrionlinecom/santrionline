@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1754125199595,
+      "tag": "0000_rich_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1754190205141,
+      "tag": "0001_dry_micromacro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1754311097058,
+      "tag": "0002_complete_midnight",
+      "breakpoints": true
+    }
+  ]
+}

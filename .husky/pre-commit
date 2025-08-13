@@ -1,0 +1,41 @@
+#!/usr/bin/env sh
+
+# POSIX shell wrapper to invoke enhanced hook logic in Node (avoids exec perm issues)
+command -v node >/dev/null 2>&1 || { echo "[pre-commit] Node.js not found"; exit 127; }
+
+node <<'NODE_HOOK'
+const { execSync } = require('child_process');
+const fs = require('fs');
+
+function exists(p){ try { fs.accessSync(p); return true; } catch { return false; } }
+function run(cmd){ execSync(cmd, { stdio: 'inherit' }); }
+function stagedFiles(){
+	try { return execSync('git diff --cached --name-only', { encoding: 'utf8' }).split(/\r?\n/).filter(Boolean); } catch { return []; }
+}
+
+try {
+	if (!exists('node_modules/lint-staged')) {
+		console.warn('[pre-commit] lint-staged not installed, skipping lint step.');
+	} else {
+		console.log('[pre-commit] Running lint-staged...');
+		run('npx lint-staged');
+	}
+
+	const files = stagedFiles();
+	if (files.some(f => /\.(ts|tsx)$/.test(f))) {
+		if (exists('node_modules/typescript')) {
+			console.log('[pre-commit] TypeScript incremental check (changed TS files detected)...');
+			run('npx tsc --noEmit --incremental --pretty false');
+		} else {
+			console.warn('[pre-commit] Skipping typecheck: typescript not installed.');
+		}
+	}
+} catch (e) {
+	const code = typeof e.status === 'number' ? e.status : 1;
+	console.error('[pre-commit] Hook failed. Aborting commit.');
+	process.exit(code);
+}
+process.exit(0);
+NODE_HOOK
+
+exit $?

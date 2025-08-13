@@ -1,0 +1,22 @@
+# Ignore CSS files from ESLint (they should be linted by stylelint instead)
+*.css
+*.scss
+*.sass
+*.less
+
+# Ignore markdown files
+*.md
+
+# Ignore build outputs
+/build
+/public/build
+/.cache
+
+# Ignore dependencies
+/node_modules
+
+# Ignore env files
+.env*
+
+# Ignore VS Code config (they may contain JSON with comments)
+.vscode/
