@@ -5,7 +5,7 @@
 INSERT OR IGNORE INTO user (
   id, name, email, username, bio, is_public, theme, password_hash, role, created_at
 ) VALUES (
-  'admin-001', 
+  'admin-001',
   'Admin Santri Online', 
   'admin@santrionline.com', 
   'admin', 
@@ -17,14 +17,40 @@ INSERT OR IGNORE INTO user (
   strftime('%s', 'now')
 );
 
+-- Insert sample ustadzfarhan profile
+INSERT OR IGNORE INTO user (
+  id, name, email, username, bio, is_public, theme, password_hash, role, created_at
+) VALUES (
+  'ustadzfarhan-001',
+  'Ustadz Farhan Maulana',
+  'ustadzfarhan@santrionline.com',
+  'ustadzfarhan',
+  '🎓 Alumni Al-Azhar Kairo | 📖 Pengajar Kitab Kuning | 🕌 Imam Masjid',
+  1,
+  'dark',
+  '$2a$10$dummy.hash.for.ustadzfarhan.user.placeholder.security',
+  'ustadz',
+  strftime('%s', 'now')
+);
+
 -- Insert sample social media links for admin
 INSERT OR IGNORE INTO user_social_links (
   id, user_id, platform, url, is_visible, display_order, created_at
-) VALUES 
+) VALUES
 ('social-001', 'admin-001', 'instagram', 'https://instagram.com/santrionline', 1, 1, strftime('%s', 'now')),
 ('social-002', 'admin-001', 'facebook', 'https://facebook.com/santrionline', 1, 2, strftime('%s', 'now')),
 ('social-003', 'admin-001', 'youtube', 'https://youtube.com/@santrionline', 1, 3, strftime('%s', 'now')),
 ('social-004', 'admin-001', 'website', 'https://santrionline.com', 1, 4, strftime('%s', 'now'));
+
+-- Insert social media links for ustadzfarhan
+INSERT OR IGNORE INTO user_social_links (
+  id, user_id, platform, url, is_visible, display_order, created_at
+) VALUES
+('social-uf-001', 'ustadzfarhan-001', 'youtube', 'https://youtube.com/@ustadzfarhan', 1, 1, strftime('%s', 'now')),
+('social-uf-002', 'ustadzfarhan-001', 'instagram', 'https://instagram.com/ustadzfarhan', 1, 2, strftime('%s', 'now')),
+('social-uf-003', 'ustadzfarhan-001', 'website', 'https://ustadzfarhan.com', 1, 3, strftime('%s', 'now')),
+('social-uf-004', 'ustadzfarhan-001', 'whatsapp', 'https://wa.me/628123456789', 1, 4, strftime('%s', 'now')),
+('social-uf-005', 'ustadzfarhan-001', 'twitter', 'https://twitter.com/ustadzfarhan', 1, 5, strftime('%s', 'now'));
 
 -- Insert sample biolink analytics
 INSERT OR IGNORE INTO biolink_analytics (

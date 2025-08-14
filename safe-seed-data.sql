@@ -2,8 +2,12 @@
 -- This fixes "near am syntax error" by removing problematic characters
 
 -- Insert user first (no dependencies)
-INSERT OR REPLACE INTO user (id, name, email, password_hash, role, created_at, username) 
+INSERT OR REPLACE INTO user (id, name, email, password_hash, role, created_at, username)
 VALUES ('user_test_123', 'Santri Test', 'test@santrionline.com', 'password123hash', 'santri', 1754302221, 'santritest');
+
+-- Insert sample ustadzfarhan user
+INSERT OR REPLACE INTO user (id, name, email, password_hash, role, created_at, username)
+VALUES ('user_ustadzfarhan', 'Ustadz Farhan Maulana', 'ustadzfarhan@santrionline.com', 'password123hash', 'ustadz', 1754302221, 'ustadzfarhan');
 
 -- Insert wallet (depends on user)
 INSERT OR REPLACE INTO dompet_santri (id, user_id, dincoin_balance, dircoin_balance) 

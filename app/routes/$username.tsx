@@ -99,11 +99,11 @@ const getMockProfile = (username: string) => {
         },
       ],
     },
-    kakahfarhan: {
+    ustadzfarhan: {
       user: {
         id: 'demo-2',
-        name: 'Kak Farhan Maulana',
-        username: 'kakahfarhan',
+        name: 'Ustadz Farhan Maulana',
+        username: 'ustadzfarhan',
         bio: '🎓 Alumni Al-Azhar Kairo | 📖 Santri Senior | 🕌 Pengurus Masjid Baitul Izzah | ✍️ Penulis Buku Islam',
         avatarUrl: '/images/avatars/ustadz-1.jpg',
         theme: 'dark',
@@ -439,7 +439,7 @@ export default function BiolinkPage() {
   const { user, socialLinks, karya } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const isDemoProfile = user.username
-    ? ['santritest', 'kakahfarhan', 'santriwati', 'hafidzali'].includes(user.username)
+    ? ['santritest', 'ustadzfarhan', 'santriwati', 'hafidzali'].includes(user.username)
     : false;
 
   // Track page visit
@@ -518,7 +518,7 @@ export default function BiolinkPage() {
   };
 
   const getProfileStats = () => {
-    if (user.username === 'kakahfarhan') {
+    if (user.username === 'ustadzfarhan') {
       return { followers: 12400, students: 2890, lessons: 156 };
     } else if (user.username === 'santriwati') {
       return { followers: 8750, students: 1240, lessons: 89 };
@@ -583,7 +583,7 @@ export default function BiolinkPage() {
             <Badge variant="secondary" className="bg-green-500/20 text-green-700 border-green-300">
               Santri Online
             </Badge>
-            {user.username === 'kakahfarhan' && (
+            {user.username === 'ustadzfarhan' && (
               <Badge variant="secondary" className="bg-blue-500/20 text-blue-700 border-blue-300">
                 Santri Senior
               </Badge>
