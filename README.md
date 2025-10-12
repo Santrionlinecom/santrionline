@@ -109,8 +109,13 @@ Salin `.env.example` -> `.env` lalu isi:
 - `CLOUDFLARE_API_TOKEN`
 - `DATABASE_ID`
 - `SESSION_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
 
 Jangan commit `.env`.
+
+Lihat panduan lengkap konfigurasi OAuth Google di
+[`GOOGLE_AUTH_SETUP.md`](./GOOGLE_AUTH_SETUP.md).
 
 ## 🩺 Health Check
 
