@@ -13,15 +13,23 @@ const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v3/userinfo';
 
 function getGoogleCredentials(context: LoaderFunctionArgs['context']) {
-  const clientId = context?.cloudflare?.env?.GOOGLE_CLIENT_ID || process.env?.GOOGLE_CLIENT_ID;
-  const clientSecret =
-    context?.cloudflare?.env?.GOOGLE_CLIENT_SECRET || process.env?.GOOGLE_CLIENT_SECRET;
+  const clientId = context?.cloudflare?.env?.GOOGLE_CLIENT_ID;
+  const clientSecret = context?.cloudflare?.env?.GOOGLE_CLIENT_SECRET;
 
-  if (!clientId || !clientSecret) {
-    return null;
+  if (clientId && clientSecret) {
+    return { clientId, clientSecret };
   }
 
-  return { clientId, clientSecret };
+  if (typeof process !== 'undefined') {
+    const fromProcessId = process.env?.GOOGLE_CLIENT_ID;
+    const fromProcessSecret = process.env?.GOOGLE_CLIENT_SECRET;
+
+    if (fromProcessId && fromProcessSecret) {
+      return { clientId: fromProcessId, clientSecret: fromProcessSecret };
+    }
+  }
+
+  return null;
 }
 
 async function exchangeCodeForTokens(
