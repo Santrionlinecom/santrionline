@@ -7,6 +7,7 @@ export const user = sqliteTable('pengguna', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  googleId: text('google_id').unique(),
   avatarUrl: text('avatar_url'), // Menambahkan kolom avatarUrl
   role: text('role', { enum: ['santri', 'admin'] })
     .notNull()

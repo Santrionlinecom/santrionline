@@ -1,6 +1,7 @@
 import { createRequestHandler, type ServerBuild } from '@remix-run/cloudflare';
 import { log, redactEnv } from './app/lib/logger';
-import * as build from './build/server';
+// @ts-expect-error - Remix build output dihasilkan saat proses build
+import * as build from './build/server'; // eslint-disable-line import/no-unresolved
 import { getLoadContext } from './load-context';
 
 // Cast build through unknown to satisfy ServerBuild type requirements

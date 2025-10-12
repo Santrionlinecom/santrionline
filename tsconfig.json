@@ -5,6 +5,7 @@
     "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
