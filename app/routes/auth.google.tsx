@@ -3,20 +3,11 @@ import { redirect } from '@remix-run/cloudflare';
 import { nanoid } from 'nanoid';
 import { getSession, commitSession } from '~/lib/session.server';
 import { safeRedirect } from '~/utils/safe-redirect';
-
-function getGoogleClientId(context: LoaderFunctionArgs['context']): string | null {
-  const fromContext = context?.cloudflare?.env?.GOOGLE_CLIENT_ID;
-  if (fromContext) return fromContext;
-  if (typeof process !== 'undefined') {
-    const fromProcess = process.env.GOOGLE_CLIENT_ID;
-    if (fromProcess) return fromProcess;
-  }
-  return null;
-}
+import { getGoogleClientConfig } from '~/lib/google-auth.server';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const clientId = getGoogleClientId(context);
-  if (!clientId) {
+  const googleConfig = getGoogleClientConfig(context);
+  if (!googleConfig) {
     throw new Response('Google OAuth belum dikonfigurasi.', { status: 500 });
   }
 
@@ -36,7 +27,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const callbackUrl = new URL('/auth/google/callback', requestUrl.origin).toString();
 
   const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-  authUrl.searchParams.set('client_id', clientId);
+  authUrl.searchParams.set('client_id', googleConfig.clientId);
   authUrl.searchParams.set('redirect_uri', callbackUrl);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('scope', 'openid email profile');

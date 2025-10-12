@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFetcher } from '@remix-run/react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import type { FirebaseClientConfig } from '~/lib/firebase-auth.server';
 
@@ -30,8 +29,12 @@ async function loadScript(src: string): Promise<void> {
 }
 
 function ensureFirebaseApp(config: FirebaseClientConfig): FirebaseAppState | null {
-  const firebase = window.firebase;
+  const firebase = window.firebase ?? (globalThis as { firebase?: any }).firebase;
   if (!firebase) return null;
+
+  if (!window.firebase && firebase) {
+    window.firebase = firebase;
+  }
 
   const existing = firebase.apps?.find((app: any) => app?.name === 'santrionline-web');
   const app = existing ?? firebase.initializeApp(config, 'santrionline-web');
@@ -49,11 +52,11 @@ type Props = {
 };
 
 export function FirebaseGoogleButton({ config, redirectTo, label }: Props) {
-  const fetcher = useFetcher();
   const [isClient, setIsClient] = useState(false);
   const [firebaseState, setFirebaseState] = useState<FirebaseAppState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -90,33 +93,47 @@ export function FirebaseGoogleButton({ config, redirectTo, label }: Props) {
     };
   }, [config, isClient]);
 
-  const handleClick = useMemo(() => {
-    return async () => {
-      if (!firebaseState) return;
-      setError(null);
-      try {
-        const result = await firebaseState.auth.signInWithPopup(firebaseState.provider);
-        const idToken: string | undefined = await result.user?.getIdToken?.();
-        if (!idToken) {
-          setError('Firebase tidak mengembalikan token ID.');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('idToken', idToken);
-        if (redirectTo) {
-          formData.append('redirectTo', redirectTo);
-        }
-
-        fetcher.submit(formData, { method: 'post', action: '/auth/firebase' });
-      } catch (signInError) {
-        console.error('Firebase sign-in error:', signInError);
-        setError('Gagal masuk dengan Google melalui Firebase. Silakan coba lagi.');
+  const handleClick = useCallback(async () => {
+    if (!firebaseState) return;
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const result = await firebaseState.auth.signInWithPopup(firebaseState.provider);
+      const idToken: string | undefined = await result.user?.getIdToken?.();
+      if (!idToken) {
+        setError('Firebase tidak mengembalikan token ID.');
+        setIsSubmitting(false);
+        return;
       }
-    };
-  }, [firebaseState, fetcher, redirectTo]);
 
-  const isSubmitting = fetcher.state !== 'idle';
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = '/auth/firebase';
+      form.style.display = 'none';
+
+      const tokenInput = document.createElement('input');
+      tokenInput.type = 'hidden';
+      tokenInput.name = 'idToken';
+      tokenInput.value = idToken;
+      form.appendChild(tokenInput);
+
+      if (redirectTo) {
+        const redirectInput = document.createElement('input');
+        redirectInput.type = 'hidden';
+        redirectInput.name = 'redirectTo';
+        redirectInput.value = redirectTo;
+        form.appendChild(redirectInput);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (signInError) {
+      console.error('Firebase sign-in error:', signInError);
+      setError('Gagal masuk dengan Google melalui Firebase. Silakan coba lagi.');
+      setIsSubmitting(false);
+    }
+  }, [firebaseState, redirectTo]);
+
   const disabled = !isClient || initializing || !firebaseState || isSubmitting;
 
   return (

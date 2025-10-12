@@ -8,21 +8,10 @@ import { createUserSession, getSession, commitSession } from '~/lib/session.serv
 import { hashPassword } from '~/lib/crypto.server';
 import { ensureWallet } from '~/lib/wallet.server';
 import { safeRedirect } from '~/utils/safe-redirect';
+import { getGoogleClientConfig } from '~/lib/google-auth.server';
 
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v3/userinfo';
-
-function getGoogleCredentials(context: LoaderFunctionArgs['context']) {
-  const clientId = context?.cloudflare?.env?.GOOGLE_CLIENT_ID || process.env?.GOOGLE_CLIENT_ID;
-  const clientSecret =
-    context?.cloudflare?.env?.GOOGLE_CLIENT_SECRET || process.env?.GOOGLE_CLIENT_SECRET;
-
-  if (!clientId || !clientSecret) {
-    return null;
-  }
-
-  return { clientId, clientSecret };
-}
 
 async function exchangeCodeForTokens(
   code: string,
@@ -117,7 +106,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     return commitAndRedirectToLogin('Kode autentikasi tidak ditemukan. Silakan coba lagi.');
   }
 
-  const credentials = getGoogleCredentials(context);
+  const credentials = getGoogleClientConfig(context);
   if (!credentials) {
     throw new Response('Google OAuth belum dikonfigurasi.', { status: 500 });
   }

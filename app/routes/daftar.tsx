@@ -15,6 +15,7 @@ import { eq } from 'drizzle-orm';
 import { safeRedirect } from '~/utils/safe-redirect';
 import { motion } from 'framer-motion'; // <-- 1. Impor motion dari framer-motion
 import { getFirebaseClientConfig } from '~/lib/firebase-auth.server';
+import { hasGoogleClientConfig } from '~/lib/google-auth.server';
 import { FirebaseGoogleButton } from '~/components/firebase-google-button';
 
 export const meta: MetaFunction = () => {
@@ -27,24 +28,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type EnvSubset = { GOOGLE_CLIENT_ID?: string };
-
 type LoaderData = {
   googleOAuthEnabled: boolean;
   firebaseConfig: ReturnType<typeof getFirebaseClientConfig>;
 };
-
-function getGoogleClientId(context: LoaderFunctionArgs['context']): string | null {
-  const env = (context as unknown as { cloudflare?: { env?: EnvSubset } } | undefined)?.cloudflare
-    ?.env;
-  if (env?.GOOGLE_CLIENT_ID) {
-    return env.GOOGLE_CLIENT_ID;
-  }
-  if (typeof process !== 'undefined' && process.env?.GOOGLE_CLIENT_ID) {
-    return process.env.GOOGLE_CLIENT_ID;
-  }
-  return null;
-}
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { getUserId } = await import('~/lib/session.server');
@@ -53,11 +40,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     return redirect('/dashboard');
   }
 
-  const googleClientId = getGoogleClientId(context);
+  const googleOAuthEnabled = hasGoogleClientConfig(context);
   const firebaseConfig = getFirebaseClientConfig(context);
 
   return json<LoaderData>({
-    googleOAuthEnabled: Boolean(googleClientId),
+    googleOAuthEnabled,
     firebaseConfig,
   });
 }
