@@ -109,8 +109,23 @@ Salin `.env.example` -> `.env` lalu isi:
 - `CLOUDFLARE_API_TOKEN`
 - `DATABASE_ID`
 - `SESSION_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `FIREBASE_API_KEY` _(opsional, untuk login Google via Firebase)_
+- `FIREBASE_AUTH_DOMAIN`
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_APP_ID`
+- `FIREBASE_MESSAGING_SENDER_ID`
+- `FIREBASE_MEASUREMENT_ID`
+- `FIREBASE_STORAGE_BUCKET`
 
 Jangan commit `.env`.
+
+Lihat panduan lengkap konfigurasi OAuth Google di
+[`GOOGLE_AUTH_SETUP.md`](./GOOGLE_AUTH_SETUP.md).
+
+Jika lebih nyaman menggunakan Firebase Authentication untuk Google Sign-In,
+ikuti [`FIREBASE_AUTH_SETUP.md`](./FIREBASE_AUTH_SETUP.md).
 
 ## 🩺 Health Check
 

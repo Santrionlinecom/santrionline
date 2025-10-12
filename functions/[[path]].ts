@@ -4,8 +4,8 @@
 import { createPagesFunctionHandler } from '@remix-run/cloudflare-pages';
 import type { ServerBuild } from '@remix-run/server-runtime';
 // Import the generated build output (JS) and cast to ServerBuild at runtime.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import * as rawBuild from '../build/server/index.js';
+// @ts-expect-error - Remix build output dihasilkan saat proses build
+import * as rawBuild from '../build/server/index.js'; // eslint-disable-line @typescript-eslint/no-var-requires, import/no-unresolved
 
 const build = rawBuild as unknown as ServerBuild;
 

@@ -1,15 +1,44 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { Form, useActionData, useSearchParams, Link } from '@remix-run/react';
+import { Form, useActionData, useSearchParams, Link, useLoaderData } from '@remix-run/react';
 import { json, redirect } from '@remix-run/cloudflare';
 // server-only modules moved to dynamic imports inside loader/action
 import { user as userSchema } from '~/db/schema';
 import { eq } from 'drizzle-orm';
+import { safeRedirect } from '~/utils/safe-redirect';
+import { getFirebaseClientConfig } from '~/lib/firebase-auth.server';
+import { FirebaseGoogleButton } from '~/components/firebase-google-button';
+
+type LoaderData = {
+  googleOAuthEnabled: boolean;
+  firebaseConfig: ReturnType<typeof getFirebaseClientConfig>;
+};
+
+type EnvSubset = { GOOGLE_CLIENT_ID?: string };
+
+function getGoogleClientId(context: LoaderFunctionArgs['context']): string | null {
+  const env = (context as unknown as { cloudflare?: { env?: EnvSubset } } | undefined)?.cloudflare
+    ?.env;
+  if (env?.GOOGLE_CLIENT_ID) {
+    return env.GOOGLE_CLIENT_ID;
+  }
+  if (typeof process !== 'undefined' && process.env?.GOOGLE_CLIENT_ID) {
+    return process.env.GOOGLE_CLIENT_ID;
+  }
+  return null;
+}
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { getUserId } = await import('~/lib/session.server');
   const userId = await getUserId(request, context);
   if (userId) return redirect('/dashboard');
-  return json({});
+
+  const googleClientId = getGoogleClientId(context);
+  const firebaseConfig = getFirebaseClientConfig(context);
+
+  return json<LoaderData>({
+    googleOAuthEnabled: Boolean(googleClientId),
+    firebaseConfig,
+  });
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
@@ -19,6 +48,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const formData = await request.formData();
   const email = formData.get('email');
   const password = formData.get('password');
+  const redirectTo = safeRedirect(formData.get('redirectTo'));
 
   if (typeof email !== 'string' || typeof password !== 'string' || !email || !password) {
     return json({ error: 'Email dan password harus diisi' }, { status: 400 });
@@ -53,7 +83,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     context,
     userId: existingUser.id,
     remember: true,
-    redirectTo: '/dashboard',
+    redirectTo,
   });
 }
 
@@ -63,9 +93,16 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 
 export default function MasukPage() {
+  const { googleOAuthEnabled, firebaseConfig } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [searchParams] = useSearchParams();
   const successMessage = searchParams.get('success');
+  const errorMessage = searchParams.get('error');
+  const redirectTo = searchParams.get('redirectTo') ?? undefined;
+  const googleHref = googleOAuthEnabled
+    ? `/auth/google${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`
+    : null;
+  const hasSocialLogin = googleOAuthEnabled || Boolean(firebaseConfig);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -78,11 +115,17 @@ export default function MasukPage() {
         </CardHeader>
         <CardContent>
           {successMessage && (
-            <div className="mb-4 p-3 text-sm bg-green-100 border border-green-300 text-green-700 rounded">
+            <div className="mb-4 rounded border border-green-300 bg-green-100 p-3 text-sm text-green-700">
               {successMessage}
             </div>
           )}
+          {errorMessage && (
+            <div className="mb-4 rounded border border-red-300 bg-red-100 p-3 text-sm text-red-700">
+              {errorMessage}
+            </div>
+          )}
           <Form method="post" className="grid gap-4">
+            {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" name="email" placeholder="m@example.com" required />
@@ -98,9 +141,33 @@ export default function MasukPage() {
               Masuk
             </Button>
           </Form>
+          {hasSocialLogin && (
+            <div className="space-y-3">
+              <div className="my-4 flex items-center gap-2 text-center text-xs text-muted-foreground">
+                <span className="flex-1 border-t border-border" />
+                <span>atau</span>
+                <span className="flex-1 border-t border-border" />
+              </div>
+              {googleHref && (
+                <Button variant="outline" className="w-full" asChild>
+                  <a href={googleHref}>Masuk dengan Google</a>
+                </Button>
+              )}
+              {firebaseConfig && (
+                <FirebaseGoogleButton
+                  config={firebaseConfig}
+                  redirectTo={redirectTo}
+                  label="Masuk dengan Google (Firebase)"
+                />
+              )}
+            </div>
+          )}
           <div className="mt-4 text-center text-sm">
             Belum punya akun?{' '}
-            <Link to="/daftar" className="underline">
+            <Link
+              to={redirectTo ? `/daftar?redirectTo=${encodeURIComponent(redirectTo)}` : '/daftar'}
+              className="underline"
+            >
               Daftar
             </Link>
           </div>

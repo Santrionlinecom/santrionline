@@ -1,6 +1,10 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/cloudflare';
 import type { AppLoadContext } from '@remix-run/cloudflare';
 
+type SessionStorage = ReturnType<typeof createCookieSessionStorage>;
+export type AppSession = Awaited<ReturnType<SessionStorage['getSession']>>;
+type CommitSessionOptions = Parameters<SessionStorage['commitSession']>[1];
+
 export type User = {
   id: string;
   email: string;
@@ -20,7 +24,7 @@ function getSessionSecret(context: AppLoadContext): string {
   } catch (error) {
     console.warn('Could not access environment variables, using default secret for development');
   }
-  
+
   // Fallback for development
   return DEFAULT_SECRET;
 }
@@ -28,7 +32,7 @@ function getSessionSecret(context: AppLoadContext): string {
 function createSessionStore(context: AppLoadContext) {
   const secret = getSessionSecret(context);
   const isProduction = context?.cloudflare?.env?.APP_ENV === 'production';
-  
+
   return createCookieSessionStorage({
     cookie: {
       name: '__session',
@@ -39,6 +43,18 @@ function createSessionStore(context: AppLoadContext) {
       secure: isProduction,
     },
   });
+}
+
+export async function commitSession(
+  session: AppSession,
+  context: AppLoadContext,
+  options?: CommitSessionOptions,
+) {
+  return createSessionStore(context).commitSession(session, options);
+}
+
+export async function destroySession(session: AppSession, context: AppLoadContext) {
+  return createSessionStore(context).destroySession(session);
 }
 
 export async function getSession(request: Request, context: AppLoadContext) {
@@ -53,8 +69,8 @@ export async function getSession(request: Request, context: AppLoadContext) {
 }
 
 export async function getUserId(
-  request: Request, 
-  context: AppLoadContext
+  request: Request,
+  context: AppLoadContext,
 ): Promise<string | undefined> {
   try {
     const session = await getSession(request, context);
@@ -69,7 +85,7 @@ export async function getUserId(
 export async function requireUserId(
   request: Request,
   context: AppLoadContext,
-  redirectTo: string = new URL(request.url).pathname
+  redirectTo: string = new URL(request.url).pathname,
 ): Promise<string> {
   const userId = await getUserId(request, context);
   if (!userId) {
@@ -82,28 +98,28 @@ export async function requireUserId(
 export async function requireAdminUserId(
   request: Request,
   context: AppLoadContext,
-  redirectTo: string = new URL(request.url).pathname
+  redirectTo: string = new URL(request.url).pathname,
 ): Promise<string> {
   const userId = await getUserId(request, context);
   if (!userId) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
     throw redirect(`/masuk?${searchParams}`);
   }
-  
+
   // Get user from database to check role
   const { getDb } = await import('~/db/drizzle.server');
   const { user } = await import('~/db/schema');
   const { eq } = await import('drizzle-orm');
-  
+
   const db = getDb(context);
   const userRecord = await db.query.user.findFirst({
     where: eq(user.id, userId),
   });
-  
+
   if (!userRecord || userRecord.role !== 'admin') {
     throw redirect('/dashboard?error=unauthorized');
   }
-  
+
   return userId;
 }
 
@@ -113,20 +129,25 @@ export async function createUserSession({
   userId,
   remember = false,
   redirectTo = '/dashboard',
+  session,
 }: {
   request: Request;
   context: AppLoadContext;
   userId: string;
   remember?: boolean;
   redirectTo?: string;
+  session?: AppSession;
 }) {
   try {
-    const session = await getSession(request, context);
-    session.set(USER_SESSION_KEY, userId);
+    const currentSession = session ?? (await getSession(request, context));
+    const sessionWithData = currentSession as AppSession & {
+      set: (name: string, value: unknown) => void;
+    };
+    sessionWithData.set(USER_SESSION_KEY, userId);
     const sessionStorage = createSessionStore(context);
     return redirect(redirectTo, {
       headers: {
-        'Set-Cookie': await sessionStorage.commitSession(session, {
+        'Set-Cookie': await sessionStorage.commitSession(currentSession, {
           maxAge: remember
             ? 60 * 60 * 24 * 7 // 7 days
             : undefined,
