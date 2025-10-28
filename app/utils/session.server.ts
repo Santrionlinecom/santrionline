@@ -1,11 +1,23 @@
 import { createCookie, redirect } from '@remix-run/cloudflare';
 import type { AppLoadContext } from '@remix-run/cloudflare';
 import { eq } from 'drizzle-orm';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import { createSupabaseServerClient } from './supabase.server';
+import {
+  createSupabaseServerClient,
+  type SupabaseAuthUser,
+  type SupabaseServerClient,
+} from './supabase.server';
 import { isAdminEmail } from './admin';
 import { getDb } from '~/db/drizzle.server';
 import { users } from '~/db/schema';
+
+function getUserMetadataString(user: SupabaseAuthUser, key: string): string | null {
+  const metadata = user.user_metadata;
+  if (metadata && typeof metadata === 'object') {
+    const value = (metadata as Record<string, unknown>)[key];
+    return typeof value === 'string' && value.length > 0 ? value : null;
+  }
+  return null;
+}
 
 export type SessionTokens = {
   accessToken: string;
@@ -89,9 +101,9 @@ export async function destroySessionCookie(context: AppLoadContext): Promise<str
 }
 
 async function getSupabaseUser(
-  client: SupabaseClient,
+  client: SupabaseServerClient,
   accessToken: string,
-): Promise<Awaited<ReturnType<SupabaseClient['auth']['getUser']>>['data']['user'] | null> {
+): Promise<SupabaseAuthUser | null> {
   const { data, error } = await client.auth.getUser(accessToken);
   if (error || !data?.user) {
     return null;
@@ -118,33 +130,41 @@ export async function getUser(
     const db = getDb(context);
     const dbUser = await db.query.users.findFirst({ where: eq(users.id, supabaseUser.id) });
     if (!dbUser) {
+      const metadataFullName = getUserMetadataString(supabaseUser, 'full_name');
+      const metadataName = getUserMetadataString(supabaseUser, 'name');
+      const metadataAvatar = getUserMetadataString(supabaseUser, 'avatar_url');
+
       return {
         id: supabaseUser.id,
         email: supabaseUser.email ?? '',
         role: isAdminEmail(supabaseUser.email ?? null, context) ? 'admin' : 'santri',
-        name: supabaseUser.user_metadata?.full_name ?? supabaseUser.email ?? null,
-        avatarUrl: supabaseUser.user_metadata?.avatar_url ?? null,
+        name: metadataFullName ?? metadataName ?? supabaseUser.email ?? null,
+        avatarUrl: metadataAvatar,
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken ?? null,
         supabase: {
           id: supabaseUser.id,
-          aud: supabaseUser.aud,
+          aud: supabaseUser.aud ?? undefined,
           email: supabaseUser.email ?? undefined,
         },
       };
     }
 
+    const metadataFullName = getUserMetadataString(supabaseUser, 'full_name');
+    const metadataName = getUserMetadataString(supabaseUser, 'name');
+    const metadataAvatar = getUserMetadataString(supabaseUser, 'avatar_url');
+
     return {
       id: dbUser.id,
       email: dbUser.email,
       role: dbUser.role,
-      name: dbUser.name,
-      avatarUrl: dbUser.avatarUrl,
+      name: dbUser.name ?? metadataFullName ?? metadataName ?? null,
+      avatarUrl: dbUser.avatarUrl ?? metadataAvatar,
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken ?? null,
       supabase: {
         id: supabaseUser.id,
-        aud: supabaseUser.aud,
+        aud: supabaseUser.aud ?? undefined,
         email: supabaseUser.email ?? undefined,
       },
     } satisfies SessionUser;

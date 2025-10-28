@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from '@remix-run/cloudflare';
 import { redirect } from '@remix-run/cloudflare';
 import { eq } from 'drizzle-orm';
-import { createSupabaseServerClient } from '~/utils/supabase.server';
+import { createSupabaseServerClient, type SupabaseAuthUser } from '~/utils/supabase.server';
 import { getOAuthStateCookie } from '~/utils/oauth.server';
 import { safeRedirect } from '~/utils/safe-redirect';
 import { users, legacyUser } from '~/db/schema';
@@ -36,7 +36,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const clearStateHeader = await stateCookie.serialize('', { maxAge: 0 });
   const failureHeaders = new Headers({ 'Set-Cookie': clearStateHeader });
 
-  const redirectWithError = (message: string) => {
+  const redirectWithError = (message: string): never => {
     const params = new URLSearchParams({ error: message });
     if (storedRedirect) {
       params.set('redirectTo', storedRedirect);
@@ -57,7 +57,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const callbackUrl = new URL('/auth/callback', url.origin).toString();
 
   const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession({
-    authCode: code,
+    authCode: code!,
     redirectTo: callbackUrl,
   });
 
@@ -66,19 +66,33 @@ export async function action({ request, context }: ActionFunctionArgs) {
     redirectWithError(message);
   }
 
-  const session = data.session;
+  const session = data.session!;
   const supabaseUser = session.user ?? data.user;
 
-  if (!supabaseUser?.id || !supabaseUser.email) {
+  if (!supabaseUser || !supabaseUser.id || !supabaseUser.email) {
     redirectWithError('Google account is missing email information.');
   }
 
-  const email = supabaseUser.email.toLowerCase();
-  const name =
-    (supabaseUser.user_metadata?.full_name as string | undefined) ??
-    (supabaseUser.user_metadata?.name as string | undefined) ??
-    email;
-  const avatarUrl = (supabaseUser.user_metadata?.avatar_url as string | undefined) ?? null;
+  const resolvedUser = supabaseUser as SupabaseAuthUser & { email: string; id: string };
+
+  const email = resolvedUser.email.toLowerCase();
+  const metadataRecord =
+    resolvedUser.user_metadata && typeof resolvedUser.user_metadata === 'object'
+      ? (resolvedUser.user_metadata as Record<string, unknown>)
+      : {};
+  const metadataFullName =
+    typeof metadataRecord['full_name'] === 'string'
+      ? (metadataRecord['full_name'] as string)
+      : null;
+  const metadataName =
+    typeof metadataRecord['name'] === 'string' ? (metadataRecord['name'] as string) : null;
+  const metadataAvatar =
+    typeof metadataRecord['avatar_url'] === 'string'
+      ? (metadataRecord['avatar_url'] as string)
+      : null;
+
+  const name = metadataFullName ?? metadataName ?? email;
+  const avatarUrl = metadataAvatar ?? null;
   const role = isAdminEmail(email, context) ? 'admin' : 'santri';
 
   const db = getDb(context);
@@ -86,7 +100,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   await db
     .insert(users)
     .values({
-      id: supabaseUser.id,
+      id: resolvedUser.id,
       email,
       name,
       avatarUrl,
@@ -103,7 +117,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     });
 
   const existingLegacyUser = await db.query.legacyUser.findFirst({
-    where: eq(legacyUser.id, supabaseUser.id),
+    where: eq(legacyUser.id, resolvedUser.id),
   });
 
   if (existingLegacyUser) {
@@ -114,18 +128,18 @@ export async function action({ request, context }: ActionFunctionArgs) {
         name,
         avatarUrl,
         role,
-        googleId: supabaseUser.id,
+        googleId: resolvedUser.id,
         updatedAt: new Date(),
       })
-      .where(eq(legacyUser.id, supabaseUser.id));
+      .where(eq(legacyUser.id, resolvedUser.id));
   } else {
     const passwordHash = await hashPassword(crypto.randomUUID());
     await db.insert(legacyUser).values({
-      id: supabaseUser.id,
+      id: resolvedUser.id,
       email,
       name,
       avatarUrl,
-      googleId: supabaseUser.id,
+      googleId: resolvedUser.id,
       passwordHash,
       role,
       createdAt: new Date(),
@@ -136,7 +150,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   try {
-    await ensureWallet(db, supabaseUser.id);
+    await ensureWallet(db, resolvedUser.id);
   } catch (walletError) {
     console.warn('Failed to ensure wallet on OAuth login', walletError);
   }
