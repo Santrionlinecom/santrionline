@@ -1,6 +1,6 @@
 import { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import type { MetaFunction } from '@remix-run/cloudflare';
-import { Link } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
 // Removed unused Skeleton import to reduce bundle size
@@ -474,16 +474,16 @@ export default function Index() {
               </p>
 
               <div className="mt-6 sm:mt-7 lg:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto">
-                <Button
-                  asChild
-                  size="lg"
-                  className="text-sm sm:text-base px-6 sm:px-7 py-3 h-auto w-full sm:w-auto"
-                >
-                  <Link to="/daftar">
+                <Form method="post" action="/auth/login" className="w-full sm:w-auto">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="text-sm sm:text-base px-6 sm:px-7 py-3 h-auto w-full sm:w-auto"
+                  >
                     <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                    Mulai Gratis Sekarang
-                  </Link>
-                </Button>
+                    Lanjutkan dengan Google
+                  </Button>
+                </Form>
                 <Button
                   asChild
                   size="lg"

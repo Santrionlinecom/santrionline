@@ -66,6 +66,11 @@ module.exports = {
       },
       settings: {
         "import/internal-regex": "^~/",
+        "import/core-modules": [
+          "@supabase/supabase-js",
+          "drizzle-orm/d1-http",
+          "drizzle-orm/d1-http/migrator",
+        ],
         "import/resolver": {
           node: {
             extensions: [".ts", ".tsx"],

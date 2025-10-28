@@ -10,10 +10,10 @@ import { eq } from 'drizzle-orm';
 import { Skeleton } from '~/components/ui/skeleton';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const { requireUserId, logout } = await import('~/lib/session.server');
+  const { requireUser, logout } = await import('~/lib/session.server');
   const { getDb } = await import('~/db/drizzle.server');
   const { ensureWallet } = await import('~/lib/wallet.server');
-  const userId = await requireUserId(request, context);
+  const { id: userId } = await requireUser(request, context);
   const db = getDb(context);
   const user = await db.query.user.findFirst({
     where: eq(userSchema.id, userId),

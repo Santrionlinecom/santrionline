@@ -102,7 +102,7 @@ CREATE TABLE comments (
 - **File Storage**: Cloudflare R2 (untuk gambar)
 - **ORM**: Drizzle ORM
 - **Validation**: Zod
-- **Auth**: Google OAuth (sudah terintegrasi)
+- **Auth**: Supabase Auth (Google OAuth)
 
 ## 📁 Struktur File
 
