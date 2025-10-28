@@ -14,10 +14,10 @@ import {
   Clock,
   ChevronDown,
   ChevronRight,
-  Users,
   Wallet,
   Shield,
   Download,
+  ShoppingBag,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -66,10 +66,10 @@ export default function FAQPage() {
       color: 'text-blue-600',
     },
     {
-      title: 'Komunitas Forum',
-      description: 'Bertanya langsung ke komunitas santri',
-      icon: Users,
-      href: '/komunitas',
+      title: 'Marketplace Karya',
+      description: 'Eksplor karya islami dari para santri',
+      icon: ShoppingBag,
+      href: '/marketplace',
       color: 'text-green-600',
     },
     {
@@ -525,11 +525,11 @@ export default function FAQPage() {
                     </div>
                   </Link>
                   <Link
-                    to="/panduan/komunitas"
+                    to="/panduan/dashboard"
                     className="block p-2 rounded hover:bg-accent/50 transition-colors"
                   >
-                    <div className="font-medium text-sm">Bergabung dengan Komunitas</div>
-                    <div className="text-xs text-muted-foreground">Manfaatkan fitur komunitas</div>
+                    <div className="font-medium text-sm">Optimalkan Dashboard</div>
+                    <div className="text-xs text-muted-foreground">Pelajari fitur inti platform</div>
                   </Link>
                 </CardContent>
               </Card>

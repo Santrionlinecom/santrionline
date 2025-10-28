@@ -125,11 +125,11 @@ export default function PanduanPage() {
           href: '/panduan/hafalan-detail',
         },
         {
-          title: 'Komunitas & Forum',
-          description: 'Berinteraksi dengan komunitas',
+          title: 'Dashboard Santri',
+          description: 'Optimalkan penggunaan dashboard utama',
           type: 'Panduan',
           duration: '12 menit',
-          href: '/panduan/komunitas',
+          href: '/panduan/dashboard',
         },
         {
           title: 'Dompet Digital',

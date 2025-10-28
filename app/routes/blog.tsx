@@ -212,19 +212,20 @@ export default function Blog() {
           </Button>
         </div>
 
-        {/* Community Engagement */}
+        {/* Collaboration CTA */}
         <Card className="bg-gradient-to-r from-primary to-blue-600 text-white border-0">
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4 text-white">� Bergabung dengan Komunitas</h2>
+            <h2 className="text-2xl font-bold mb-4 text-white">🤝 Kolaborasi Karya Santri</h2>
             <p className="mb-6 opacity-90 max-w-md mx-auto">
-              Bergabunglah dengan ribuan santri lainnya untuk berbagi ilmu dan pengalaman pembelajaran Islam.
+              Dukung dan bagikan karya islami terbaik melalui marketplace Santri Online. Jadikan tulisan, audio, dan media dakwah
+              lebih bermanfaat.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
               <Button variant="secondary" asChild>
                 <Link to="/daftar">Daftar Sekarang</Link>
               </Button>
               <Button variant="outline" className="border-white/20 text-white hover:bg-white/10" asChild>
-                <Link to="/komunitas">Lihat Komunitas</Link>
+                <Link to="/marketplace">Jelajahi Marketplace</Link>
               </Button>
             </div>
             <p className="text-xs opacity-70 mt-4">

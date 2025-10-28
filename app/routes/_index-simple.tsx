@@ -76,13 +76,12 @@ export default function Index() {
     { icon: Users, label: "Santri Aktif", value: "0", color: "text-blue-600" },
     { icon: BookOpen, label: "Hafalan Selesai", value: "0", color: "text-green-600" },
     { icon: Award, label: "Sertifikat Terbit", value: "0", color: "text-purple-600" },
-    { icon: Heart, label: "Komunitas", value: "0", color: "text-red-600" }
+    { icon: Heart, label: "Kolaborasi", value: "0", color: "text-red-600" }
   ];
 
   const menuItems = [
     { href: "/", label: "Beranda" },
     { href: "/kursus", label: "Kursus" },
-    { href: "/komunitas", label: "Komunitas" },
     { href: "/marketplace", label: "Marketplace" },
     { href: "/tentang", label: "Tentang" },
     { href: "/kontak", label: "Kontak" }

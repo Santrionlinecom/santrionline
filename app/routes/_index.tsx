@@ -193,8 +193,8 @@ export default function Index() {
       },
       {
         icon: Users,
-        title: 'Komunitas Aswaja',
-        description: 'Diskusi moderasi & kolaborasi aman berbasis manhaj lurus.',
+        title: 'Kolaborasi Karya Santri',
+        description: 'Kolaborasi aman untuk berbagi karya islami yang bermanfaat.',
         gradient: 'from-green-500 to-green-600',
       },
       {
@@ -236,7 +236,7 @@ export default function Index() {
       { icon: Users, label: 'Santri Aktif', value: '2,500+', color: 'text-blue-600' },
       { icon: BookOpen, label: 'Hafalan', value: '8,000+', color: 'text-green-600' },
       { icon: Award, label: 'Sertifikat', value: '1,200+', color: 'text-purple-600' },
-      { icon: Heart, label: 'Komunitas', value: '25+', color: 'text-red-600' },
+      { icon: Heart, label: 'Kolaborasi', value: '25+', color: 'text-red-600' },
     ],
     [],
   );
@@ -327,11 +327,11 @@ export default function Index() {
       },
       {
         icon: Users,
-        title: 'Komunitas',
-        description: 'Bergabung dengan santri se-manhaj di seluruh Indonesia',
-        link: '/komunitas',
+        title: 'Kolaborasi Karya',
+        description: 'Bagikan dan dukung karya islami terbaik dari para santri',
+        link: '/marketplace',
         color: 'bg-green-500',
-        features: ['Forum diskusi', 'Kajian online', 'Mentoring', 'Study group'],
+        features: ['Marketplace karya', 'Dukungan santri', 'Karya digital', 'Media dakwah'],
       },
       {
         icon: Award,

@@ -170,9 +170,9 @@ export default function KaryaDetailPage() {
           >
             <div className="flex items-center gap-4 mb-6">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/komunitas">
+                <Link to="/marketplace">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Kembali ke Komunitas
+                  Kembali ke Marketplace
                 </Link>
               </Button>
             </div>

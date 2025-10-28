@@ -194,11 +194,11 @@ export default function ManhajSalaf() {
       link: '/dashboard',
     },
     {
-      feature: 'Komunitas Santri Aswaja',
-      description: 'Membangun komunitas yang berpegang pada manhaj salaf',
-      examples: ['Diskusi ilmiah', 'Saling mengingatkan', 'Berbagi ilmu', 'Silaturrahmi'],
+      feature: 'Kolaborasi Karya Santri',
+      description: 'Wadah berbagi karya islami yang bermanfaat bagi umat',
+      examples: ['Berbagi kitab digital', 'Mendukung penulis santri', 'Berbagi media dakwah', 'Kolaborasi dakwah'],
       icon: Heart,
-      link: '/komunitas',
+      link: '/marketplace',
     },
   ];
 
