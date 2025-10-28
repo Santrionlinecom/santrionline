@@ -1,8 +1,22 @@
 import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
-// Tabel Pengguna dan Peran
-export const user = sqliteTable('pengguna', {
+// Tabel Users untuk Supabase Auth sinkronisasi
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name'),
+  avatarUrl: text('avatar_url'),
+  role: text('role', { enum: ['santri', 'admin'] })
+    .notNull()
+    .default('santri'),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
+
+// Tabel Pengguna dan Peran (legacy)
+export const legacyUser = sqliteTable('pengguna', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
@@ -28,12 +42,14 @@ export const user = sqliteTable('pengguna', {
   customDomain: text('custom_domain'), // Custom domain jika ada
 });
 
+export const user = legacyUser;
+
 // Tabel Biolink dan Social Media
 export const user_social_links = sqliteTable('user_social_links', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   platform: text('platform', {
     enum: [
       'tiktok',
@@ -60,7 +76,7 @@ export const biolink_analytics = sqliteTable('biolink_analytics', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   visitorCount: integer('visitor_count').default(0),
   clickCount: integer('click_count').default(0),
   date: text('date').notNull(), // Format: YYYY-MM-DD
@@ -72,7 +88,7 @@ export const dompet_santri = sqliteTable('dompet_santri', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   dincoinBalance: integer('dincoin_balance').notNull().default(0),
   dircoinBalance: integer('dircoin_balance').notNull().default(0),
 });
@@ -94,7 +110,7 @@ export const topup_requests = sqliteTable('topup_requests', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   amount: integer('amount').notNull(),
   currency: text('currency', { enum: ['dincoin', 'dircoin'] }).notNull(),
   paymentMethod: text('payment_method').notNull(),
@@ -116,10 +132,10 @@ export const purchases = sqliteTable('purchases', {
   id: text('id').primaryKey(),
   buyerId: text('buyer_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   sellerId: text('seller_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   karyaId: text('karya_id')
     .notNull()
     .references(() => karya.id),
@@ -139,7 +155,7 @@ export const karya = sqliteTable(
     id: text('id').primaryKey(),
     authorId: text('author_id')
       .notNull()
-      .references(() => user.id),
+      .references(() => legacyUser.id),
     title: text('title').notNull(),
     description: text('description'),
     price: integer('price').notNull(),
@@ -198,7 +214,7 @@ export const orders = sqliteTable('orders', {
   id: text('id').primaryKey(),
   buyerId: text('buyer_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   karyaId: text('karya_id')
     .notNull()
     .references(() => karya.id),
@@ -214,7 +230,7 @@ export const community_post = sqliteTable('community_post', {
   id: text('id').primaryKey(),
   authorId: text('author_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   title: text('title').notNull(),
   content: text('content').notNull(),
   category: text('category', {
@@ -237,7 +253,7 @@ export const post_comment = sqliteTable('post_comment', {
     .references(() => community_post.id),
   authorId: text('author_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   content: text('content').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }),
@@ -252,7 +268,7 @@ export const post_like = sqliteTable(
       .references(() => community_post.id),
     userId: text('user_id')
       .notNull()
-      .references(() => user.id),
+      .references(() => legacyUser.id),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   },
   (table) => ({
@@ -273,7 +289,7 @@ export const user_hafalan_quran = sqliteTable(
   {
     userId: text('user_id')
       .notNull()
-      .references(() => user.id),
+      .references(() => legacyUser.id),
     surahId: integer('surah_id')
       .notNull()
       .references(() => quran_surah.id),
@@ -324,7 +340,7 @@ export const user_progres_diniyah = sqliteTable(
   {
     userId: text('user_id')
       .notNull()
-      .references(() => user.id),
+      .references(() => legacyUser.id),
     pelajaranId: integer('pelajaran_id')
       .notNull()
       .references(() => diniyah_pelajaran.id),
@@ -343,13 +359,13 @@ export const ijazah = sqliteTable('ijazah', {
   id: text('id').primaryKey(),
   studentId: text('student_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   type: text('type', { enum: ['raport', 'ijazah'] }).notNull(),
   fileUrl: text('file_url').notNull(),
   issuedAt: integer('issued_at', { mode: 'timestamp' }).notNull(),
   issuedBy: text('issued_by')
     .notNull()
-    .references(() => user.id), // Admin ID
+    .references(() => legacyUser.id), // Admin ID
 });
 
 // =========================
@@ -359,7 +375,7 @@ export const certificate = sqliteTable('certificate', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   certificateCode: text('certificate_code').notNull().unique(), // kode publik (misal STO-2024-001)
   totalJuz: integer('total_juz').notNull().default(0),
   totalScore: integer('total_score').notNull().default(0),
@@ -380,7 +396,7 @@ export const hafalan_evaluasi = sqliteTable('hafalan_evaluasi', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => legacyUser.id),
   surahId: integer('surah_id')
     .notNull()
     .references(() => quran_surah.id),
@@ -406,7 +422,7 @@ export const ulama = sqliteTable('ulama', {
   categoryId: text('category_id')
     .notNull()
     .references(() => ulama_category.id),
-  authorId: text('author_id').references(() => user.id),
+  authorId: text('author_id').references(() => legacyUser.id),
   name: text('name').notNull(),
   fullName: text('full_name'),
   slug: text('slug').unique(),

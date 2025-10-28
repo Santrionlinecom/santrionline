@@ -59,9 +59,9 @@ function extractError(e: unknown): string {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const { requireUserId } = await import('~/lib/session.server');
+  const { requireUser } = await import('~/lib/session.server');
   const { getDb } = await import('~/db/drizzle.server');
-  const userId = await requireUserId(request, context);
+  const { id: userId } = await requireUser(request, context);
   const db = getDb(context);
   const errors: Array<{ step: string; error: string }> = [];
 

@@ -115,7 +115,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
 
         {/* Logout */}
         <DropdownMenuItem asChild>
-          <Form method="post" action="/logout" className="w-full">
+          <Form method="post" action="/auth/logout" className="w-full">
             <button
               type="submit"
               className="flex w-full items-center px-2 py-1.5 text-sm text-red-600 hover:text-red-700"

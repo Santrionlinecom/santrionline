@@ -109,13 +109,14 @@ Salin `.env.example` -> `.env` lalu isi:
 - `CLOUDFLARE_API_TOKEN`
 - `DATABASE_ID`
 - `SESSION_SECRET`
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `ADMIN_EMAILS`
 
 Jangan commit `.env`.
 
-Lihat panduan lengkap konfigurasi OAuth Google di
-[`GOOGLE_AUTH_SETUP.md`](./GOOGLE_AUTH_SETUP.md).
+Panduan lengkap konfigurasi Supabase Auth tersedia di
+[`SUPABASE_AUTH_SETUP.md`](./SUPABASE_AUTH_SETUP.md).
 
 ## 🩺 Health Check
 

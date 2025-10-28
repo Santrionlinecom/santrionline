@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Link, useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from '@remix-run/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +8,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Button } from "~/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
-import { Coins, LogOut } from "lucide-react";
+} from '~/components/ui/dropdown-menu';
+import { Button } from '~/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Badge } from '~/components/ui/badge';
+import { Coins, LogOut } from 'lucide-react';
 
 // PENTING: Pastikan Anda sudah menambahkan komponen ini melalui terminal:
 // npx shadcn-ui@latest add dropdown-menu button avatar
@@ -36,10 +36,7 @@ export function UserNav({ user }: UserNavProps) {
   }
 
   const handleLogout = () => {
-    fetcher.submit(
-      {},
-      { method: "post", action: "/logout" }
-    );
+    fetcher.submit({}, { method: 'post', action: '/auth/logout' });
   };
 
   return (
@@ -52,18 +49,14 @@ export function UserNav({ user }: UserNavProps) {
             <div className="w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
               <Coins className="h-2.5 w-2.5 text-yellow-800" />
             </div>
-            <span className="text-xs font-medium text-yellow-800">
-              {user.dincoin || 0}
-            </span>
+            <span className="text-xs font-medium text-yellow-800">{user.dincoin || 0}</span>
           </div>
           {/* Dircoin */}
           <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-full">
             <div className="w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center">
               <Coins className="h-2.5 w-2.5 text-gray-800" />
             </div>
-            <span className="text-xs font-medium text-gray-800">
-              {user.dircoin || 0}
-            </span>
+            <span className="text-xs font-medium text-gray-800">{user.dircoin || 0}</span>
           </div>
         </div>
       )}
@@ -73,7 +66,7 @@ export function UserNav({ user }: UserNavProps) {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
             <Avatar className="h-10 w-10 border">
-              <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
+              <AvatarImage src={user.avatarUrl || ''} alt={user.name} />
               <AvatarFallback>{user.initials}</AvatarFallback>
             </Avatar>
           </Button>
@@ -82,12 +75,10 @@ export function UserNav({ user }: UserNavProps) {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{user.name}</p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
-              </p>
+              <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
             </div>
           </DropdownMenuLabel>
-          
+
           {/* Wallet Balance in Dropdown */}
           {(user.dincoin !== undefined || user.dircoin !== undefined) && (
             <>
@@ -117,7 +108,7 @@ export function UserNav({ user }: UserNavProps) {
               </DropdownMenuLabel>
             </>
           )}
-          
+
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link to="/dashboard/profil">Profil</Link>
@@ -129,7 +120,7 @@ export function UserNav({ user }: UserNavProps) {
             <Link to="/dashboard/hafalan">Hafalan</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={handleLogout}
             className="flex items-center gap-2 cursor-pointer"
           >
