@@ -42,15 +42,15 @@ export default function Fitur() {
     },
     {
       icon: Users,
-      title: 'Komunitas Santri',
+      title: 'Marketplace Karya',
       description:
-        'Bergabung dengan komunitas santri dari seluruh Indonesia untuk berbagi ilmu dan pengalaman.',
+        'Apresiasi karya islami dari santri di seluruh Indonesia melalui marketplace terkurasi.',
       gradient: 'from-green-500 to-green-600',
       details: [
-        'Forum diskusi antar santri',
-        'Grup belajar berdasarkan level',
-        'Tanya jawab dengan ustadz',
-        'Mentoring dari kakak senior',
+        'Upload dan jual karya islami',
+        'Sistem royalti transparan',
+        'Promosi karya unggulan',
+        'Kolaborasi antar kreator',
       ],
     },
     {

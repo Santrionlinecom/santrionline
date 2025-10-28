@@ -1,26 +1,26 @@
-import { Link, useLocation } from "@remix-run/react";
-import { Button } from "~/components/ui/button";
-import { UserProfileDropdown } from "~/components/user-profile-dropdown";
-import { 
+import { Link, useLocation } from '@remix-run/react';
+import { Button } from '~/components/ui/button';
+import { UserProfileDropdown } from '~/components/user-profile-dropdown';
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "~/components/ui/navigation-menu";
-import { cn } from "~/lib/cn";
-import { 
-  BookOpen, 
-  Users, 
-  ShoppingCart, 
+} from '~/components/ui/navigation-menu';
+import { cn } from '~/lib/cn';
+import {
+  BookOpen,
+  Users,
+  ShoppingCart,
   Info,
   GraduationCap,
   MessageCircle,
   Award,
-  Menu
-} from "lucide-react";
-import { useState } from "react";
+  Menu,
+} from 'lucide-react';
+import { useState } from 'react';
 
 interface HeaderProps {
   user: {
@@ -36,79 +36,62 @@ interface HeaderProps {
 
 const navigationItems = [
   {
-    title: "Belajar",
+    title: 'Belajar',
     items: [
       {
-        title: "Hafalan Al-Quran",
-        href: "/dashboard/hafalan",
-        description: "Sistem tracking hafalan Al-Quran yang terstruktur",
-        icon: BookOpen
+        title: 'Hafalan Al-Quran',
+        href: '/dashboard/hafalan',
+        description: 'Sistem tracking hafalan Al-Quran yang terstruktur',
+        icon: BookOpen,
       },
       {
-        title: "Progres Akademik",
-        href: "/dashboard/admin/akademik",
-        description: "Pantau perkembangan akademik Anda",
-        icon: GraduationCap
+        title: 'Progres Akademik',
+        href: '/dashboard/admin/akademik',
+        description: 'Pantau perkembangan akademik Anda',
+        icon: GraduationCap,
       },
       {
-        title: "Sertifikat & Ijazah",
-        href: "/dashboard/sertifikat",
-        description: "Kelola sertifikat dan ijazah digital",
-        icon: Award
-      }
-    ]
+        title: 'Sertifikat & Ijazah',
+        href: '/dashboard/sertifikat',
+        description: 'Kelola sertifikat dan ijazah digital',
+        icon: Award,
+      },
+    ],
   },
   {
-    title: "Ilmu Syariah",
+    title: 'Ilmu Syariah',
     items: [
       {
-  title: "Biografi Ulama",
-  href: "/biografi-ulama",
-  description: "Biografi ulama 4 madzhab & tokoh tasawuf / thariqah",
-        icon: Users
+        title: 'Biografi Ulama',
+        href: '/biografi-ulama',
+        description: 'Biografi ulama 4 madzhab & tokoh tasawuf / thariqah',
+        icon: Users,
       },
       {
         title: "Kitab Mu'tabarah",
-        href: "/kitab",
-        description: "Koleksi kitab-kitab dari ulama salaf",
-        icon: BookOpen
-      }
-    ]
+        href: '/kitab',
+        description: 'Koleksi kitab-kitab dari ulama salaf',
+        icon: BookOpen,
+      },
+    ],
   },
   {
-    title: "Komunitas",
+    title: 'Karya Santri',
     items: [
       {
-        title: "Forum Diskusi",
-        href: "/komunitas",
-        description: "Bergabung dalam diskusi dengan sesama santri",
-        icon: MessageCircle
+        title: 'Sharing Karya',
+        href: '/marketplace',
+        description: 'Berbagi dan apresiasi karya islami dari santri',
+        icon: ShoppingCart,
       },
       {
-        title: "Grup Belajar",
-        href: "/komunitas/grup",
-        description: "Temukan atau buat grup belajar",
-        icon: Users
-      }
-    ]
+        title: 'Karyaku',
+        href: '/dashboard/karyaku',
+        description: 'Kelola karya yang Anda bagikan',
+        icon: BookOpen,
+      },
+    ],
   },
-  {
-    title: "Karya Santri",
-    items: [
-      {
-        title: "Sharing Karya",
-        href: "/marketplace",
-        description: "Berbagi dan apresiasi karya islami dari santri",
-        icon: ShoppingCart
-      },
-      {
-        title: "Karyaku",
-        href: "/dashboard/karyaku",
-        description: "Kelola karya yang Anda bagikan",
-        icon: BookOpen
-      }
-    ]
-  }
 ];
 
 export function Header({ user }: HeaderProps) {
@@ -120,8 +103,8 @@ export function Header({ user }: HeaderProps) {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <img 
-            src="https://files.santrionline.com/logo%20santrionline.com.png" 
+          <img
+            src="https://files.santrionline.com/logo%20santrionline.com.png"
             alt="Santri Online"
             className="h-8 w-auto"
           />
@@ -133,9 +116,7 @@ export function Header({ user }: HeaderProps) {
             <NavigationMenuList className="space-x-2">
               {navigationItems.map((item) => (
                 <NavigationMenuItem key={item.title}>
-                  <NavigationMenuTrigger className="h-10">
-                    {item.title}
-                  </NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="h-10">{item.title}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                       {item.items.map((subItem) => (
@@ -144,8 +125,8 @@ export function Header({ user }: HeaderProps) {
                             <Link
                               to={subItem.href}
                               className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                location.pathname === subItem.href && "bg-accent"
+                                'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                                location.pathname === subItem.href && 'bg-accent',
                               )}
                             >
                               <div className="flex items-center gap-2 text-sm font-medium leading-none">
@@ -163,14 +144,14 @@ export function Header({ user }: HeaderProps) {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               ))}
-              
+
               {/* Simple Links */}
               <NavigationMenuItem>
-                <Link 
+                <Link
                   to="/tentang"
                   className={cn(
-                    "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                    location.pathname === "/tentang" && "bg-accent"
+                    'group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50',
+                    location.pathname === '/tentang' && 'bg-accent',
                   )}
                 >
                   <Info className="w-4 h-4 mr-2" />
@@ -245,30 +226,28 @@ export function Header({ user }: HeaderProps) {
                       key={subItem.title}
                       to={subItem.href}
                       className={cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent",
-                        location.pathname === subItem.href && "bg-accent"
+                        'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent',
+                        location.pathname === subItem.href && 'bg-accent',
                       )}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <subItem.icon className="w-4 h-4" />
                       <div>
                         <div className="font-medium">{subItem.title}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {subItem.description}
-                        </div>
+                        <div className="text-xs text-muted-foreground">{subItem.description}</div>
                       </div>
                     </Link>
                   ))}
                 </div>
               </div>
             ))}
-            
+
             <div className="pt-4 border-t">
               <Link
                 to="/tentang"
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent",
-                  location.pathname === "/tentang" && "bg-accent"
+                  'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent',
+                  location.pathname === '/tentang' && 'bg-accent',
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -297,8 +276,8 @@ export function Header({ user }: HeaderProps) {
             {user && (
               <div className="pt-4 border-t">
                 <Button className="w-full" asChild>
-                  <Link 
-                    to="/dashboard" 
+                  <Link
+                    to="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center justify-center gap-2"
                   >

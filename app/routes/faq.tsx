@@ -14,7 +14,7 @@ import {
   Clock,
   ChevronDown,
   ChevronRight,
-  Users,
+  Award,
   Wallet,
   Shield,
   Download,
@@ -66,10 +66,10 @@ export default function FAQPage() {
       color: 'text-blue-600',
     },
     {
-      title: 'Komunitas Forum',
-      description: 'Bertanya langsung ke komunitas santri',
-      icon: Users,
-      href: '/komunitas',
+      title: 'Program Sertifikat',
+      description: 'Kumpulkan sertifikat digital resmi',
+      icon: Award,
+      href: '/sertifikat',
       color: 'text-green-600',
     },
     {
@@ -185,22 +185,22 @@ export default function FAQPage() {
       ],
     },
     {
-      title: 'Komunitas & Forum',
+      title: 'Sertifikat & Penghargaan',
       faqs: [
         {
-          question: 'Bagaimana aturan posting di forum komunitas?',
+          question: 'Bagaimana cara mendapatkan sertifikat digital?',
           answer:
-            'Pastikan konten sesuai dengan nilai-nilai Islam, tidak mengandung SARA, spam, atau konten tidak pantas. Gunakan bahasa yang sopan dan saling menghormati.',
+            'Ikuti program belajar atau ujian yang tersedia di menu Sertifikat. Setelah menyelesaikan seluruh persyaratan, sertifikat digital akan diterbitkan secara otomatis.',
         },
         {
-          question: 'Bisakah saya membuat grup diskusi pribadi?',
+          question: 'Apakah sertifikat Santri Online bisa diverifikasi?',
           answer:
-            "Ya, Anda dapat membuat grup diskusi dengan mengundang anggota tertentu. Fitur ini tersedia di menu 'Komunitas' > 'Buat Grup'.",
+            'Setiap sertifikat memiliki kode unik yang dapat diverifikasi melalui halaman /verify/sertifikat/[kode]. Bagikan tautan tersebut kepada pihak yang membutuhkan verifikasi.',
         },
         {
-          question: 'Bagaimana cara melaporkan konten yang tidak pantas?',
+          question: 'Bisakah saya mencetak sertifikat digital?',
           answer:
-            'Klik ikon report di setiap postingan atau komentar yang tidak pantas. Tim moderator akan meninjau laporan dalam 24 jam.',
+            'Tentu, Anda dapat mengunduh sertifikat dalam format PDF dari dashboard sertifikat dan mencetaknya sesuai kebutuhan.',
         },
       ],
     },
@@ -525,11 +525,13 @@ export default function FAQPage() {
                     </div>
                   </Link>
                   <Link
-                    to="/panduan/komunitas"
+                    to="/panduan"
                     className="block p-2 rounded hover:bg-accent/50 transition-colors"
                   >
-                    <div className="font-medium text-sm">Bergabung dengan Komunitas</div>
-                    <div className="text-xs text-muted-foreground">Manfaatkan fitur komunitas</div>
+                    <div className="font-medium text-sm">Panduan Sertifikat Digital</div>
+                    <div className="text-xs text-muted-foreground">
+                      Cara mengikuti ujian dan klaim sertifikat
+                    </div>
                   </Link>
                 </CardContent>
               </Card>

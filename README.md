@@ -6,7 +6,7 @@ Dibuat oleh **Yogik Pratama Aprilian**
 
 ## 🌟 Tentang Proyek
 
-Platform Digital Terintegrasi untuk Santri adalah sebuah Super App yang dirancang khusus untuk memenuhi kebutuhan komunitas santri dan pesantren. Platform ini menggabungkan berbagai layanan dalam satu aplikasi yang mudah digunakan.
+Platform Digital Terintegrasi untuk Santri adalah sebuah Super App yang dirancang khusus untuk mendukung kebutuhan belajar dan layanan santri serta pesantren. Platform ini menggabungkan berbagai layanan dalam satu aplikasi yang mudah digunakan.
 
 ## 🌐 Website & Media Sosial
 
@@ -160,7 +160,8 @@ npm run deploy:full
 
 - **Otomatisasi update:** Repository ini sudah disiapkan untuk proses build dan deploy otomatis melalui Cloudflare Pages. Aktifkan auto-deploy pada branch `main` sehingga setiap push terbaru akan langsung diproses dan dipublikasi tanpa perlu langkah manual tambahan.【F:CLOUDFLARE_PAGES_DEPLOYMENT.md†L27-L44】【F:DEPLOYMENT_FAQ.md†L1-L26】
 - **Integrasi domain real-time:** Konfigurasi `wrangler.toml` dan `wrangler.pages.toml` sudah menyertakan binding database, R2 storage, serta output build yang kompatibel dengan Cloudflare Pages. Setelah custom domain (`santrionline.com` dan variannya) ditambahkan lewat dashboard Pages, perubahan deployment akan otomatis tersaji di domain tersebut begitu build selesai.【F:wrangler.toml†L1-L17】【F:CLOUDFLARE_PAGES_DEPLOYMENT.md†L46-L77】【F:DEPLOYMENT_FAQ.md†L65-L116】
-- **Kesiapan indexing Google:** Fitur komunitas dan konten di dalam aplikasi dirancang agar SEO-friendly dan dapat terindeks oleh Google secara real-time, sehingga setiap pembaruan konten akan ikut terbaca crawler setelah deployment terbaru aktif.【F:KOMUNITAS_FEATURE_DOCUMENTATION.md†L5-L29】
+
+* **Kesiapan indexing Google:** Konten pembelajaran dan marketplace di dalam aplikasi dirancang agar SEO-friendly dan dapat terindeks oleh Google secara real-time, sehingga setiap pembaruan konten akan ikut terbaca crawler setelah deployment terbaru aktif.
 
 ## 🧹 Legacy SQL
 

@@ -44,8 +44,6 @@
 🏪 Marketplace Tables:
 - ✅ karya (dengan SEO fields)
 - ✅ orders (renamed from order)
-- ✅ community_post
-- ✅ post_comment
 - ✅ ijazah
 
 ✅ TEST DATA YANG SUDAH DIMASUKKAN:

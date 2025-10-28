@@ -72,26 +72,10 @@ CREATE TABLE IF NOT EXISTS karya (
   FOREIGN KEY(author_id) REFERENCES pengguna(id)
 );
 
-CREATE TABLE IF NOT EXISTS community_post (
-  id TEXT PRIMARY KEY,
-  author_id TEXT NOT NULL,
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  category TEXT DEFAULT 'umum',
-  likes_count INTEGER DEFAULT 0,
-  comments_count INTEGER DEFAULT 0,
-  views_count INTEGER DEFAULT 0,
-  is_published INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER,
-  FOREIGN KEY(author_id) REFERENCES pengguna(id)
-);
-
 -- Indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_diniyah_pelajaran_kitab ON diniyah_pelajaran(kitab_id);
 CREATE INDEX IF NOT EXISTS idx_user_progres_diniyah_user ON user_progres_diniyah(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_progres_diniyah_pelajaran ON user_progres_diniyah(pelajaran_id);
 CREATE INDEX IF NOT EXISTS idx_karya_author ON karya(author_id);
-CREATE INDEX IF NOT EXISTS idx_community_post_author ON community_post(author_id);
 
 SELECT 'All missing tables created successfully' as result;

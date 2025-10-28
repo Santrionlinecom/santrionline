@@ -13,8 +13,6 @@ DROP TABLE IF EXISTS dompet_santri;
 DROP TABLE IF EXISTS biolink_analytics;
 DROP TABLE IF EXISTS user_social_links;
 DROP TABLE IF EXISTS ijazah;
-DROP TABLE IF EXISTS post_comment;
-DROP TABLE IF EXISTS community_post;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS karya;
 DROP TABLE IF EXISTS user;
@@ -152,25 +150,6 @@ CREATE TABLE orders (
     created_at INTEGER NOT NULL,
     FOREIGN KEY (buyer_id) REFERENCES user(id),
     FOREIGN KEY (karya_id) REFERENCES karya(id)
-);
-
-CREATE TABLE community_post (
-    id TEXT PRIMARY KEY,
-    author_id TEXT NOT NULL,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user(id)
-);
-
-CREATE TABLE post_comment (
-    id TEXT PRIMARY KEY,
-    post_id TEXT NOT NULL,
-    author_id TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES community_post(id),
-    FOREIGN KEY (author_id) REFERENCES user(id)
 );
 
 CREATE TABLE ijazah (

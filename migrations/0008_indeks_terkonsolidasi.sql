@@ -5,12 +5,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_pengguna_username ON pengguna(username);
 -- error "duplicate column name" dan menghentikan migrasi.
 -- Jika Anda membuat database BARU dari baseline yang benar-benar lama dan kolom belum ada,
 -- tambahkan manual dengan perintah berikut (jalankan satu per satu):
---   ALTER TABLE community_post ADD COLUMN category TEXT DEFAULT 'umum';
---   ALTER TABLE community_post ADD COLUMN likes_count INTEGER NOT NULL DEFAULT 0;
---   ALTER TABLE community_post ADD COLUMN comments_count INTEGER NOT NULL DEFAULT 0;
---   ALTER TABLE community_post ADD COLUMN views_count INTEGER NOT NULL DEFAULT 0;
---   ALTER TABLE community_post ADD COLUMN is_published INTEGER NOT NULL DEFAULT 1;
---   ALTER TABLE community_post ADD COLUMN updated_at INTEGER;
 -- ALTER dihapus agar migrasi idempotent & tidak gagal pada DB yang sudah maju.
 -- Tabel topup_requests belum ada di baseline, buat dulu agar index tidak gagal
 CREATE TABLE IF NOT EXISTS `topup_requests` (
@@ -39,8 +33,6 @@ CREATE INDEX IF NOT EXISTS idx_biolink_analytics_user_date ON biolink_analytics(
 CREATE INDEX IF NOT EXISTS idx_karya_author ON karya(author_id);
 CREATE INDEX IF NOT EXISTS idx_karya_status ON karya(status);
 CREATE INDEX IF NOT EXISTS idx_karya_slug ON karya(slug);
-CREATE INDEX IF NOT EXISTS idx_community_post_author ON community_post(author_id);
-CREATE INDEX IF NOT EXISTS idx_community_post_category ON community_post(category);
 CREATE INDEX IF NOT EXISTS idx_transactions_dompet ON transactions(dompet_id);
 CREATE INDEX IF NOT EXISTS idx_topup_requests_user ON topup_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_buyer ON orders(buyer_id);

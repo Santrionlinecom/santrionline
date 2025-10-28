@@ -16,8 +16,6 @@ DROP TABLE IF EXISTS dompet_santri;
 DROP TABLE IF EXISTS biolink_analytics;
 DROP TABLE IF EXISTS user_social_links;
 DROP TABLE IF EXISTS ijazah;
-DROP TABLE IF EXISTS post_comment;
-DROP TABLE IF EXISTS community_post;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS karya;
 DROP TABLE IF EXISTS user;

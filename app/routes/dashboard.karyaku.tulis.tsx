@@ -30,7 +30,7 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Tulis dan publikasikan karya baru untuk komunitas santri. Buat artikel, cerpen, puisi, atau konten kreatif lainnya.',
+        'Tulis dan publikasikan karya baru untuk mendukung dakwah digital santri. Buat artikel, cerpen, puisi, atau konten kreatif lainnya.',
     },
   ];
 };
@@ -192,7 +192,7 @@ export default function TulisKaryaPage() {
               Tulis Karya Baru
             </h1>
             <p className="text-muted-foreground mt-2">
-              Bagikan pemikiran, ilmu, dan kreativitas Anda dengan komunitas santri
+              Bagikan pemikiran, ilmu, dan kreativitas Anda kepada para pembaca santri
             </p>
           </div>
 

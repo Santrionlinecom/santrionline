@@ -8,7 +8,7 @@ export default function ExampleSimplified() {
         <div className="container">
           <div className="text-center mb-6">
             <h1>Platform Santri Online</h1>
-            <p>Bergabunglah dengan komunitas santri digital Indonesia</p>
+            <p>Bergabunglah dengan ekosistem santri digital Indonesia</p>
           </div>
 
           <div className="flex gap-4 justify-center">
@@ -43,14 +43,14 @@ export default function ExampleSimplified() {
 
             <div className="card fade-in">
               <div className="card-header">
-                <h3 className="card-title">Komunitas Santri</h3>
+                <h3 className="card-title">Dompet Santri</h3>
               </div>
               <div className="card-content">
                 <p>
-                  Bergabung dengan komunitas santri dari seluruh Indonesia untuk berbagi ilmu dan
-                  pengalaman.
+                  Kelola DinCoin dan DirCoin untuk mendukung kegiatan belajar dan dakwah secara
+                  mudah.
                 </p>
-                <button className="btn btn-secondary mt-4">Gabung Komunitas</button>
+                <button className="btn btn-secondary mt-4">Kelola Dompet</button>
               </div>
             </div>
 

@@ -72,7 +72,7 @@ export default function TentangPage() {
       icon: Users,
       title: 'Komunitas Berkualitas',
       description:
-        'Membangun komunitas santri yang saling menguatkan dalam pembelajaran dan pengamalan ilmu agama',
+        'Membangun jaringan santri yang saling menguatkan dalam pembelajaran dan pengamalan ilmu agama',
       color: 'text-purple-600',
     },
     {
@@ -231,7 +231,7 @@ export default function TentangPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>Membangun komunitas santri beraqidah Ahli Sunnah wal Jamaah</span>
+                      <span>Membangun jaringan santri beraqidah Ahli Sunnah wal Jamaah</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -499,7 +499,7 @@ export default function TentangPage() {
               Bergabunglah dengan Revolusi Pendidikan Islam Aswaja
             </h2>
             <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-              Jadilah bagian dari komunitas santri yang mempelajari dan mengamalkan ilmu agama
+              Jadilah bagian dari jaringan santri yang mempelajari dan mengamalkan ilmu agama
               berdasarkan manhaj Ahli Sunnah wal Jamaah
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

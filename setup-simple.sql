@@ -96,25 +96,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY (dompet_id) REFERENCES dompet_santri(id)
 );
 
-CREATE TABLE IF NOT EXISTS community_post (
-    id TEXT PRIMARY KEY,
-    author_id TEXT NOT NULL,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user(id)
-);
-
-CREATE TABLE IF NOT EXISTS post_comment (
-    id TEXT PRIMARY KEY,
-    post_id TEXT NOT NULL,
-    author_id TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES community_post(id),
-    FOREIGN KEY (author_id) REFERENCES user(id)
-);
-
 CREATE TABLE IF NOT EXISTS karya (
     id TEXT PRIMARY KEY,
     author_id TEXT NOT NULL,

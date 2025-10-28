@@ -1,15 +1,15 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { Link, useLoaderData } from '@remix-run/react';
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 // server-only db import moved to dynamic import in loader
 import { karya, user } from '~/db/schema';
 import { eq, and } from 'drizzle-orm';
-import { 
+import {
   ArrowLeft,
   Clock,
   Eye,
@@ -21,43 +21,52 @@ import {
   DollarSign,
   BookOpen,
   User,
-  Globe
-} from "lucide-react";
+  Globe,
+} from 'lucide-react';
 import { formatDate, formatRelativeTime, formatDincoin } from '~/lib/utils';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.karya) {
     return [
-      { title: "Karya Tidak Ditemukan - Santri Online" },
-      { name: "description", content: "Karya yang Anda cari tidak ditemukan." },
+      { title: 'Karya Tidak Ditemukan - Santri Online' },
+      { name: 'description', content: 'Karya yang Anda cari tidak ditemukan.' },
     ];
   }
 
   const { karya } = data;
   return [
     { title: `${karya.seoTitle || karya.title} - Santri Online` },
-    { name: "description", content: karya.seoDescription || karya.description || karya.excerpt },
-    { name: "keywords", content: karya.seoKeywords || karya.tags },
-    { property: "og:title", content: karya.seoTitle || karya.title },
-    { property: "og:description", content: karya.seoDescription || karya.description || karya.excerpt },
-    { property: "og:type", content: "article" },
-    { property: "og:image", content: karya.featuredImage || "/logo-light.png" },
-    { property: "article:author", content: karya.authorName },
-    { property: "article:published_time", content: karya.publishedAt ? new Date(karya.publishedAt).toISOString() : undefined },
-    { property: "article:modified_time", content: karya.updatedAt ? new Date(karya.updatedAt).toISOString() : undefined },
-    { property: "article:tag", content: karya.tags },
+    { name: 'description', content: karya.seoDescription || karya.description || karya.excerpt },
+    { name: 'keywords', content: karya.seoKeywords || karya.tags },
+    { property: 'og:title', content: karya.seoTitle || karya.title },
+    {
+      property: 'og:description',
+      content: karya.seoDescription || karya.description || karya.excerpt,
+    },
+    { property: 'og:type', content: 'article' },
+    { property: 'og:image', content: karya.featuredImage || '/logo-light.png' },
+    { property: 'article:author', content: karya.authorName },
+    {
+      property: 'article:published_time',
+      content: karya.publishedAt ? new Date(karya.publishedAt).toISOString() : undefined,
+    },
+    {
+      property: 'article:modified_time',
+      content: karya.updatedAt ? new Date(karya.updatedAt).toISOString() : undefined,
+    },
+    { property: 'article:tag', content: karya.tags },
   ];
 };
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
   const slug = params.slug;
   if (!slug) {
-    throw new Response("Not Found", { status: 404 });
+    throw new Response('Not Found', { status: 404 });
   }
 
   const { getDb } = await import('~/db/drizzle.server');
   const db = getDb(context);
-  
+
   // Try to find by slug first, then by ID
   let karyaData = await db
     .select({
@@ -89,10 +98,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     })
     .from(karya)
     .leftJoin(user, eq(karya.authorId, user.id))
-    .where(and(
-      eq(karya.slug, slug),
-      eq(karya.status, 'published')
-    ))
+    .where(and(eq(karya.slug, slug), eq(karya.status, 'published')))
     .limit(1);
 
   // If not found by slug, try by ID (for backward compatibility)
@@ -127,36 +133,41 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
       })
       .from(karya)
       .leftJoin(user, eq(karya.authorId, user.id))
-      .where(and(
-        eq(karya.id, slug),
-        eq(karya.status, 'published')
-      ))
+      .where(and(eq(karya.id, slug), eq(karya.status, 'published')))
       .limit(1);
   }
 
   if (karyaData.length === 0) {
-    throw new Response("Not Found", { status: 404 });
+    throw new Response('Not Found', { status: 404 });
   }
 
   const karyaItem = karyaData[0];
-  
-  // Increment view count
-  await db.update(karya).set({ 
-    viewCount: (karyaItem.viewCount || 0) + 1 
-  }).where(eq(karya.id, karyaItem.id));
 
-  return json({ 
+  // Increment view count
+  await db
+    .update(karya)
+    .set({
+      viewCount: (karyaItem.viewCount || 0) + 1,
+    })
+    .where(eq(karya.id, karyaItem.id));
+
+  return json({
     karya: {
       ...karyaItem,
-      viewCount: (karyaItem.viewCount || 0) + 1
-    }
+      viewCount: (karyaItem.viewCount || 0) + 1,
+    },
   });
 }
 
 export default function KaryaDetailPage() {
   const { karya } = useLoaderData<typeof loader>();
 
-  const tags = karya.tags ? karya.tags.split(',').map(tag => tag.trim()).filter(Boolean) : [];
+  const tags = karya.tags
+    ? karya.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+    : [];
 
   return (
     <div className="bg-background text-foreground">
@@ -170,9 +181,9 @@ export default function KaryaDetailPage() {
           >
             <div className="flex items-center gap-4 mb-6">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/komunitas">
+                <Link to="/marketplace">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Kembali ke Komunitas
+                  Kembali ke Marketplace
                 </Link>
               </Button>
             </div>
@@ -202,9 +213,7 @@ export default function KaryaDetailPage() {
                 )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                {karya.title}
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">{karya.title}</h1>
 
               {karya.excerpt && (
                 <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
@@ -216,7 +225,12 @@ export default function KaryaDetailPage() {
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-12 h-12">
-                    <AvatarImage src={karya.authorAvatar || `https://placehold.co/48x48/10b981/ffffff?text=${karya.authorName?.charAt(0) || 'U'}`} />
+                    <AvatarImage
+                      src={
+                        karya.authorAvatar ||
+                        `https://placehold.co/48x48/10b981/ffffff?text=${karya.authorName?.charAt(0) || 'U'}`
+                      }
+                    />
                     <AvatarFallback>{karya.authorName?.charAt(0) || 'U'}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -246,8 +260,8 @@ export default function KaryaDetailPage() {
               {/* Featured Image */}
               {karya.featuredImage && (
                 <div className="mb-8">
-                  <img 
-                    src={karya.featuredImage} 
+                  <img
+                    src={karya.featuredImage}
                     alt={karya.title}
                     className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
                   />
@@ -269,9 +283,11 @@ export default function KaryaDetailPage() {
             >
               <Card className="border-0 shadow-sm">
                 <CardContent className="p-8">
-                  <div className={`prose prose-lg max-w-none ${
-                    karya.contentType === 'html' ? '' : 'whitespace-pre-wrap'
-                  }`}>
+                  <div
+                    className={`prose prose-lg max-w-none ${
+                      karya.contentType === 'html' ? '' : 'whitespace-pre-wrap'
+                    }`}
+                  >
                     {karya.contentType === 'html' ? (
                       <div dangerouslySetInnerHTML={{ __html: karya.content || '' }} />
                     ) : (
@@ -374,19 +390,24 @@ export default function KaryaDetailPage() {
                 <CardContent>
                   <div className="flex items-start gap-4">
                     <Avatar className="w-16 h-16">
-                      <AvatarImage src={karya.authorAvatar || `https://placehold.co/64x64/10b981/ffffff?text=${karya.authorName?.charAt(0) || 'U'}`} />
-                      <AvatarFallback className="text-lg">{karya.authorName?.charAt(0) || 'U'}</AvatarFallback>
+                      <AvatarImage
+                        src={
+                          karya.authorAvatar ||
+                          `https://placehold.co/64x64/10b981/ffffff?text=${karya.authorName?.charAt(0) || 'U'}`
+                        }
+                      />
+                      <AvatarFallback className="text-lg">
+                        {karya.authorName?.charAt(0) || 'U'}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold mb-2">{karya.authorName}</h3>
                       <p className="text-muted-foreground mb-4">
-                        Santri aktif yang gemar berbagi ilmu dan pengalaman melalui tulisan.
-                        Bergabung dengan komunitas Santri Online untuk menginspirasi sesama.
+                        Santri aktif yang gemar berbagi ilmu dan pengalaman melalui tulisan. Dukung
+                        ekosistem karya Santri Online untuk menginspirasi sesama.
                       </p>
                       <Button variant="outline" size="sm" asChild>
-                        <Link to={`/${karya.authorId}`}>
-                          Lihat Profil
-                        </Link>
+                        <Link to={`/${karya.authorId}`}>Lihat Profil</Link>
                       </Button>
                     </div>
                   </div>

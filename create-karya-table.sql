@@ -38,23 +38,3 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (buyer_id) REFERENCES user(id),
     FOREIGN KEY (karya_id) REFERENCES karya(id)
 );
-
--- Create community tables if they don't exist
-CREATE TABLE IF NOT EXISTS community_post (
-    id TEXT PRIMARY KEY,
-    author_id TEXT NOT NULL,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user(id)
-);
-
-CREATE TABLE IF NOT EXISTS post_comment (
-    id TEXT PRIMARY KEY,
-    post_id TEXT NOT NULL,
-    author_id TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES community_post(id),
-    FOREIGN KEY (author_id) REFERENCES user(id)
-);

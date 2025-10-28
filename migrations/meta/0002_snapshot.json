@@ -58,71 +58,8 @@
           "name": "biolink_analytics_user_id_user_id_fk",
           "tableFrom": "biolink_analytics",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "community_post": {
-      "name": "community_post",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "author_id": {
-          "name": "author_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "community_post_author_id_user_id_fk": {
-          "name": "community_post_author_id_user_id_fk",
-          "tableFrom": "community_post",
-          "tableTo": "user",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -208,12 +145,8 @@
           "name": "diniyah_pelajaran_kitab_id_diniyah_kitab_id_fk",
           "tableFrom": "diniyah_pelajaran",
           "tableTo": "diniyah_kitab",
-          "columnsFrom": [
-            "kitab_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["kitab_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -262,12 +195,8 @@
           "name": "dompet_santri_user_id_user_id_fk",
           "tableFrom": "dompet_santri",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -328,12 +257,8 @@
           "name": "ijazah_student_id_user_id_fk",
           "tableFrom": "ijazah",
           "tableTo": "user",
-          "columnsFrom": [
-            "student_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["student_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -341,12 +266,8 @@
           "name": "ijazah_issued_by_user_id_fk",
           "tableFrom": "ijazah",
           "tableTo": "user",
-          "columnsFrom": [
-            "issued_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["issued_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -538,12 +459,8 @@
           "name": "karya_author_id_user_id_fk",
           "tableFrom": "karya",
           "tableTo": "user",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["author_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -605,12 +522,8 @@
           "name": "orders_buyer_id_user_id_fk",
           "tableFrom": "orders",
           "tableTo": "user",
-          "columnsFrom": [
-            "buyer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["buyer_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -618,84 +531,8 @@
           "name": "orders_karya_id_karya_id_fk",
           "tableFrom": "orders",
           "tableTo": "karya",
-          "columnsFrom": [
-            "karya_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "post_comment": {
-      "name": "post_comment",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "post_id": {
-          "name": "post_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "author_id": {
-          "name": "author_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "post_comment_post_id_community_post_id_fk": {
-          "name": "post_comment_post_id_community_post_id_fk",
-          "tableFrom": "post_comment",
-          "tableTo": "community_post",
-          "columnsFrom": [
-            "post_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "post_comment_author_id_user_id_fk": {
-          "name": "post_comment_author_id_user_id_fk",
-          "tableFrom": "post_comment",
-          "tableTo": "user",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["karya_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -794,12 +631,8 @@
           "name": "transactions_dompet_id_dompet_santri_id_fk",
           "tableFrom": "transactions",
           "tableTo": "dompet_santri",
-          "columnsFrom": [
-            "dompet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["dompet_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -902,16 +735,12 @@
       "indexes": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         },
         "user_username_unique": {
           "name": "user_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         }
       },
@@ -952,12 +781,8 @@
           "name": "user_hafalan_quran_user_id_user_id_fk",
           "tableFrom": "user_hafalan_quran",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -965,22 +790,15 @@
           "name": "user_hafalan_quran_surah_id_quran_surah_id_fk",
           "tableFrom": "user_hafalan_quran",
           "tableTo": "quran_surah",
-          "columnsFrom": [
-            "surah_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["surah_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "user_hafalan_quran_user_id_surah_id_pk": {
-          "columns": [
-            "user_id",
-            "surah_id"
-          ],
+          "columns": ["user_id", "surah_id"],
           "name": "user_hafalan_quran_user_id_surah_id_pk"
         }
       },
@@ -1026,12 +844,8 @@
           "name": "user_progres_diniyah_user_id_user_id_fk",
           "tableFrom": "user_progres_diniyah",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1039,22 +853,15 @@
           "name": "user_progres_diniyah_pelajaran_id_diniyah_pelajaran_id_fk",
           "tableFrom": "user_progres_diniyah",
           "tableTo": "diniyah_pelajaran",
-          "columnsFrom": [
-            "pelajaran_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pelajaran_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "user_progres_diniyah_user_id_pelajaran_id_pk": {
-          "columns": [
-            "user_id",
-            "pelajaran_id"
-          ],
+          "columns": ["user_id", "pelajaran_id"],
           "name": "user_progres_diniyah_user_id_pelajaran_id_pk"
         }
       },
@@ -1122,12 +929,8 @@
           "name": "user_social_links_user_id_user_id_fk",
           "tableFrom": "user_social_links",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

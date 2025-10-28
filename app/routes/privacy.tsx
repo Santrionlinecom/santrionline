@@ -81,7 +81,7 @@ export default function Privacy() {
             <ul className="list-disc pl-6 space-y-2">
               <li>Progress hafalan Al-Quran</li>
               <li>Sertifikat dan ijazah yang diperoleh</li>
-              <li>Aktivitas belajar dan partisipasi komunitas</li>
+              <li>Aktivitas belajar dan interaksi pembelajaran</li>
               <li>Karya yang dibuat dan dijual di marketplace</li>
             </ul>
 
@@ -110,7 +110,7 @@ export default function Privacy() {
               <li>Memverifikasi identitas dan mencegah penipuan</li>
               <li>Personalisasi pengalaman belajar Anda</li>
               <li>Mengirim notifikasi penting tentang akun dan layanan</li>
-              <li>Memfasilitasi komunikasi dalam komunitas santri</li>
+              <li>Memfasilitasi komunikasi antara pengguna dan mentor</li>
               <li>Memproses transaksi DinCoin dan DirCoin</li>
               <li>Menganalisis penggunaan untuk pengembangan fitur</li>
               <li>Mematuhi kewajiban hukum yang berlaku</li>
@@ -144,10 +144,10 @@ export default function Privacy() {
               keamanan pengguna.
             </p>
 
-            <h4 className="font-semibold">d. Dalam Komunitas</h4>
+            <h4 className="font-semibold">d. Dalam Jaringan Pengguna</h4>
             <p>
-              Informasi profil publik (nama, foto, pencapaian) dapat dilihat oleh anggota komunitas
-              lain sesuai pengaturan privasi Anda.
+              Informasi profil publik (nama, foto, pencapaian) dapat dilihat oleh pengguna lain
+              sesuai pengaturan privasi Anda.
             </p>
           </CardContent>
         </Card>

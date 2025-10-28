@@ -1,10 +1,10 @@
-import { type MetaFunction } from "@remix-run/cloudflare";
-import { useState } from "react";
-import { Link } from "@remix-run/react";
-import { 
-  Users, 
-  BookOpen, 
-  Star, 
+import { type MetaFunction } from '@remix-run/cloudflare';
+import { useState } from 'react';
+import { Link } from '@remix-run/react';
+import {
+  Users,
+  BookOpen,
+  Star,
   Award,
   ArrowRight,
   ExternalLink,
@@ -16,22 +16,23 @@ import {
   User,
   GraduationCap,
   Heart,
-  Zap
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
+  Zap,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/ui/badge';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Demo Biolink - Santri Online" },
+    { title: 'Demo Biolink - Santri Online' },
     {
-      name: "description",
-      content: "Lihat contoh biolink santri, ustadz, dan pengguna Santri Online lainnya. Buat biolink Anda sendiri untuk berbagi profil dan karya Islam.",
+      name: 'description',
+      content:
+        'Lihat contoh biolink santri, ustadz, dan pengguna Santri Online lainnya. Buat biolink Anda sendiri untuk berbagi profil dan karya Islam.',
     },
     {
-      name: "keywords",
-      content: "biolink santri, profil ustadz, biolink islam, santri online demo, profil santri"
+      name: 'keywords',
+      content: 'biolink santri, profil ustadz, biolink islam, santri online demo, profil santri',
     },
   ];
 };
@@ -49,10 +50,10 @@ export default function DemoBiolink() {
       avatar: '/images/avatars/santri-1.jpg',
       theme: 'light',
       stats: { followers: 890, progress: 75, badges: 12 },
-      highlights: ['Tahfidz Progress 15 Juz', 'Active in Islamic Studies', 'Community Volunteer'],
+      highlights: ['Tahfidz Progress 15 Juz', 'Active in Islamic Studies', 'Program Volunteer'],
       socialCount: 4,
       karyaCount: 2,
-      verified: false
+      verified: false,
     },
     {
       id: 'ustadzfarhan',
@@ -66,7 +67,7 @@ export default function DemoBiolink() {
       highlights: ['Verified Islamic Teacher', '10+ Years Experience', 'Published Author'],
       socialCount: 5,
       karyaCount: 3,
-      verified: true
+      verified: true,
     },
     {
       id: 'santriwati',
@@ -80,7 +81,7 @@ export default function DemoBiolink() {
       highlights: ['Female Islamic Scholar', 'Quran Memorizer', 'Women Studies Expert'],
       socialCount: 4,
       karyaCount: 2,
-      verified: true
+      verified: true,
     },
     {
       id: 'hafidzali',
@@ -94,8 +95,8 @@ export default function DemoBiolink() {
       highlights: ['Complete Quran Memorizer', 'MTQ National Champion', 'YouTube Creator'],
       socialCount: 5,
       karyaCount: 4,
-      verified: true
-    }
+      verified: true,
+    },
   ];
 
   const categories = [
@@ -103,12 +104,13 @@ export default function DemoBiolink() {
     { id: 'santri', name: 'Santri', icon: GraduationCap },
     { id: 'ustadz', name: 'Ustadz', icon: User },
     { id: 'santriwati', name: 'Santriwati', icon: Heart },
-    { id: 'hafidz', name: 'Hafidz', icon: BookOpen }
+    { id: 'hafidz', name: 'Hafidz', icon: BookOpen },
   ];
 
-  const filteredProfiles = selectedCategory === 'all' 
-    ? demoProfiles 
-    : demoProfiles.filter(profile => profile.category === selectedCategory);
+  const filteredProfiles =
+    selectedCategory === 'all'
+      ? demoProfiles
+      : demoProfiles.filter((profile) => profile.category === selectedCategory);
 
   const getThemePreview = (theme: string) => {
     switch (theme) {
@@ -143,40 +145,47 @@ export default function DemoBiolink() {
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div 
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: "url('/images/islamic-pattern.svg')",
-            backgroundSize: "400px 400px",
-            backgroundRepeat: "repeat"
+            backgroundSize: '400px 400px',
+            backgroundRepeat: 'repeat',
           }}
         ></div>
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center text-white max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
               <Zap className="w-5 h-5" />
               <span className="text-sm font-medium">Demo Biolink</span>
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Contoh <span className="text-yellow-300">Biolink</span> Santri Online
             </h1>
-            
+
             <p className="text-xl sm:text-2xl mb-8 leading-relaxed opacity-90">
-              Lihat berbagai contoh profil biolink dari <strong>santri</strong>, <strong>ustadz</strong>, 
-              dan <strong>pengguna</strong> platform Santri Online
+              Lihat berbagai contoh profil biolink dari <strong>santri</strong>,{' '}
+              <strong>ustadz</strong>, dan <strong>pengguna</strong> platform Santri Online
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/daftar">
-                <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8">
+                <Button
+                  size="lg"
+                  className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8"
+                >
                   <User className="w-5 h-5 mr-2" />
                   Buat Biolink Gratis
                 </Button>
               </Link>
               <Link to="/">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8"
+                >
                   <BookOpen className="w-5 h-5 mr-2" />
                   Pelajari Platform
                 </Button>
@@ -196,11 +205,11 @@ export default function DemoBiolink() {
             {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
+                variant={selectedCategory === category.id ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center gap-2 ${
-                  selectedCategory === category.id 
-                    ? 'bg-green-600 hover:bg-green-700' 
+                  selectedCategory === category.id
+                    ? 'bg-green-600 hover:bg-green-700'
                     : 'hover:bg-green-50 hover:text-green-700 hover:border-green-300'
                 }`}
               >
@@ -214,7 +223,10 @@ export default function DemoBiolink() {
         {/* Demo Profiles Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mb-16">
           {filteredProfiles.map((profile) => (
-            <Card key={profile.id} className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-green-200">
+            <Card
+              key={profile.id}
+              className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-green-200"
+            >
               {/* Theme Preview */}
               <div className={`h-24 ${getThemePreview(profile.theme)} relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-black/20"></div>
@@ -225,7 +237,10 @@ export default function DemoBiolink() {
                       Verified
                     </Badge>
                   )}
-                  <Badge variant="secondary" className={`${getCategoryColor(profile.category)} text-white border-0`}>
+                  <Badge
+                    variant="secondary"
+                    className={`${getCategoryColor(profile.category)} text-white border-0`}
+                  >
                     {profile.category.charAt(0).toUpperCase() + profile.category.slice(1)}
                   </Badge>
                 </div>
@@ -254,30 +269,42 @@ export default function DemoBiolink() {
                   {profile.category === 'santri' ? (
                     <>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-green-600">{profile.stats.followers}</div>
+                        <div className="text-lg font-bold text-green-600">
+                          {profile.stats.followers}
+                        </div>
                         <div className="text-xs text-gray-500">Followers</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-blue-600">{profile.stats.progress}%</div>
+                        <div className="text-lg font-bold text-blue-600">
+                          {profile.stats.progress}%
+                        </div>
                         <div className="text-xs text-gray-500">Progress</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-orange-600">{profile.stats.badges}</div>
+                        <div className="text-lg font-bold text-orange-600">
+                          {profile.stats.badges}
+                        </div>
                         <div className="text-xs text-gray-500">Badges</div>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-green-600">{(profile.stats.followers / 1000).toFixed(1)}K</div>
+                        <div className="text-lg font-bold text-green-600">
+                          {(profile.stats.followers / 1000).toFixed(1)}K
+                        </div>
                         <div className="text-xs text-gray-500">Followers</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-blue-600">{((profile.stats.students || 0) / 1000).toFixed(1)}K</div>
+                        <div className="text-lg font-bold text-blue-600">
+                          {((profile.stats.students || 0) / 1000).toFixed(1)}K
+                        </div>
                         <div className="text-xs text-gray-500">Students</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-orange-600">{profile.stats.lessons || 0}</div>
+                        <div className="text-lg font-bold text-orange-600">
+                          {profile.stats.lessons || 0}
+                        </div>
                         <div className="text-xs text-gray-500">Lessons</div>
                       </div>
                     </>
@@ -314,7 +341,11 @@ export default function DemoBiolink() {
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
-                  <Button variant="outline" size="icon" className="hover:bg-green-50 hover:border-green-300">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="hover:bg-green-50 hover:border-green-300"
+                  >
                     <Heart className="w-4 h-4" />
                   </Button>
                 </div>
@@ -328,30 +359,36 @@ export default function DemoBiolink() {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
             Fitur Biolink Santri Online
           </h2>
-          
+
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Profil Kustom</h3>
-              <p className="text-gray-600">Buat profil yang mencerminkan identitas Islam Anda dengan berbagai tema menarik</p>
+              <p className="text-gray-600">
+                Buat profil yang mencerminkan identitas Islam Anda dengan berbagai tema menarik
+              </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Social Links</h3>
-              <p className="text-gray-600">Kumpulkan semua link media sosial Anda dalam satu tempat yang mudah diakses</p>
+              <p className="text-gray-600">
+                Kumpulkan semua link media sosial Anda dalam satu tempat yang mudah diakses
+              </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Showcase Karya</h3>
-              <p className="text-gray-600">Tampilkan karya tulis, video, atau produk digital Islam Anda kepada dunia</p>
+              <p className="text-gray-600">
+                Tampilkan karya tulis, video, atau produk digital Islam Anda kepada dunia
+              </p>
             </div>
           </div>
         </section>
@@ -362,25 +399,32 @@ export default function DemoBiolink() {
             <CardContent className="p-12">
               <h2 className="text-3xl font-bold mb-4">Siap Membuat Biolink Anda?</h2>
               <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-                Bergabunglah dengan ribuan santri, ustadz, dan muslimah yang sudah menggunakan 
+                Bergabunglah dengan ribuan santri, ustadz, dan muslimah yang sudah menggunakan
                 platform Santri Online untuk berbagi karya dan dakwah Islam
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/daftar">
-                  <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8">
+                  <Button
+                    size="lg"
+                    className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8"
+                  >
                     <User className="w-5 h-5 mr-2" />
                     Daftar Gratis Sekarang
                   </Button>
                 </Link>
                 <Link to="/tentang">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white text-white hover:bg-white hover:text-green-600 font-semibold px-8"
+                  >
                     <BookOpen className="w-5 h-5 mr-2" />
                     Pelajari Lebih Lanjut
                   </Button>
                 </Link>
               </div>
-              
+
               <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm opacity-80">
                 <span className="flex items-center gap-1">
                   <Star className="w-4 h-4" />

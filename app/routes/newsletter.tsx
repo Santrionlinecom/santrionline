@@ -47,7 +47,7 @@ export default function Newsletter() {
       date: '1 Juli 2025',
       preview:
         'Strategi membangun konsistensi dalam belajar, interview dengan hafidz muda berprestasi...',
-      topics: ['Konsistensi Belajar', 'Success Story', 'Community Highlights'],
+      topics: ['Konsistensi Belajar', 'Success Story', 'Program Highlights'],
     },
     {
       title: 'Newsletter Edisi #13 - Juni 2025',

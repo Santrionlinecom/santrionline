@@ -128,7 +128,7 @@ export default function TutorialPage() {
       tutorials: [
         {
           title: 'Bergabung di Forum',
-          description: 'Cara berpartisipasi dalam diskusi komunitas',
+          description: 'Cara memaksimalkan fitur marketplace dan kolaborasi',
           duration: '5 menit',
           type: 'video',
           level: 'Pemula',

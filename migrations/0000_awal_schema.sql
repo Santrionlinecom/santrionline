@@ -19,25 +19,6 @@ CREATE TABLE IF NOT EXISTS `pengguna` (
 CREATE INDEX IF NOT EXISTS idx_pengguna_email ON pengguna(email);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_pengguna_username ON pengguna(username);
 
--- Konten komunitas
-CREATE TABLE IF NOT EXISTS `community_post` (
-  `id` TEXT PRIMARY KEY NOT NULL,
-  `author_id` TEXT NOT NULL,
-  `title` TEXT NOT NULL,
-  `content` TEXT NOT NULL,
-  `created_at` INTEGER NOT NULL,
-  FOREIGN KEY (`author_id`) REFERENCES `pengguna`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
-);
-CREATE TABLE IF NOT EXISTS `post_comment` (
-  `id` TEXT PRIMARY KEY NOT NULL,
-  `post_id` TEXT NOT NULL,
-  `author_id` TEXT NOT NULL,
-  `content` TEXT NOT NULL,
-  `created_at` INTEGER NOT NULL,
-  FOREIGN KEY (`post_id`) REFERENCES `community_post`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION,
-  FOREIGN KEY (`author_id`) REFERENCES `pengguna`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
-);
-
 -- Karya (produk / konten premium)
 CREATE TABLE IF NOT EXISTS `karya` (
   `id` TEXT PRIMARY KEY NOT NULL,

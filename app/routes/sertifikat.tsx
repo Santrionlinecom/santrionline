@@ -163,7 +163,7 @@ export default function Sertifikat() {
     {
       icon: Users,
       title: 'Jaringan Alumni',
-      description: 'Bergabung dengan komunitas eksklusif alumni bersertifikat Santri Online',
+      description: 'Bergabung dengan jaringan eksklusif alumni bersertifikat Santri Online',
     },
   ];
 

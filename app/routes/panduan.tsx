@@ -125,11 +125,11 @@ export default function PanduanPage() {
           href: '/panduan/hafalan-detail',
         },
         {
-          title: 'Komunitas & Forum',
-          description: 'Berinteraksi dengan komunitas',
+          title: 'Program Sertifikat Digital',
+          description: 'Panduan mengikuti ujian dan klaim sertifikat',
           type: 'Panduan',
           duration: '12 menit',
-          href: '/panduan/komunitas',
+          href: '/panduan/sertifikat',
         },
         {
           title: 'Dompet Digital',
@@ -190,11 +190,11 @@ export default function PanduanPage() {
           href: '/panduan/metode-hafalan',
         },
         {
-          title: 'Networking di Komunitas',
-          description: 'Membangun jaringan santri',
+          title: 'Kolaborasi Marketplace',
+          description: 'Strategi bekerja sama antar kreator',
           type: 'Panduan',
           duration: '10 menit',
-          href: '/panduan/networking',
+          href: '/panduan/kolaborasi',
         },
         {
           title: 'Content Creation Tips',
@@ -560,7 +560,7 @@ export default function PanduanPage() {
                   </div>
                   <h4 className="font-semibold">Menengah</h4>
                   <p className="text-sm text-muted-foreground">
-                    Eksplorasi marketplace, komunitas, dan fitur collaboration
+                    Eksplorasi marketplace, dompet digital, dan fitur kolaborasi
                   </p>
                 </div>
                 <div className="space-y-4">

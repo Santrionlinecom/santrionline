@@ -12,8 +12,6 @@ DROP TABLE IF EXISTS `user_hafalan_quran`;
 DROP TABLE IF EXISTS `user_progres_diniyah`;
 DROP TABLE IF EXISTS `user_social_links`;
 DROP TABLE IF EXISTS `biolink_analytics`;
-DROP TABLE IF EXISTS `post_comment`;
-DROP TABLE IF EXISTS `community_post`;
 DROP TABLE IF EXISTS `transaction`;
 DROP TABLE IF EXISTS `dompet_santri`;
 DROP TABLE IF EXISTS `order`;

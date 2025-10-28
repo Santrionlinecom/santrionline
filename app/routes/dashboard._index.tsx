@@ -3,7 +3,7 @@ import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useOutletContext, Link } from '@remix-run/react';
 import { motion } from 'framer-motion';
 // server-only imports in loader
-import { dompet_santri, user_hafalan_quran, quran_surah, community_post, karya } from '~/db/schema';
+import { dompet_santri, user_hafalan_quran, quran_surah, karya } from '~/db/schema';
 import { eq, sql, desc } from 'drizzle-orm';
 import { log } from '~/lib/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
@@ -14,17 +14,14 @@ import {
   Wallet,
   BookCheck,
   TrendingUp,
-  Users,
   Star,
   Award,
   Target,
   BookOpen,
-  MessageCircle,
   // Heart, (unused)
   ShoppingBag,
   PlusCircle,
   ArrowRight,
-  Activity,
   Trophy,
   Zap,
   // Eye (unused)
@@ -47,8 +44,6 @@ type HafalanSummary = {
   totalAyahs: number;
 } | null;
 type KaryaSummary = { id: string | number; title: string; price: number; createdAt: Date | string };
-type PostSummary = { id: string | number; title: string; createdAt: Date | string };
-
 function extractError(e: unknown): string {
   if (e instanceof Error) return e.message;
   if (typeof e === 'object' && e && 'message' in e) {
@@ -114,25 +109,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     log.error?.('dashboard.index.karya_error', { userId, error: msg });
   }
 
-  // Recent posts
-  let recentPosts: PostSummary[] = [];
-  try {
-    recentPosts = await db
-      .select({
-        id: community_post.id,
-        title: community_post.title,
-        createdAt: community_post.createdAt,
-      })
-      .from(community_post)
-      .where(eq(community_post.authorId, userId))
-      .orderBy(desc(community_post.createdAt))
-      .limit(3);
-  } catch (e: unknown) {
-    const msg = extractError(e);
-    errors.push({ step: 'community_post', error: msg });
-    log.error?.('dashboard.index.community_post_error', { userId, error: msg });
-  }
-
   // Calculate percentage based on completed surahs out of 114 total surahs in Quran
   const surahProgressPercentage = hafalanData?.completedSurahs
     ? Math.round((hafalanData.completedSurahs / 114) * 100)
@@ -151,13 +127,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       totalAyahs: hafalanData?.totalAyahs ?? 0,
     },
     recentKarya,
-    recentPosts,
     partialErrors: errors.length ? errors : undefined,
   });
 }
 
 export default function DashboardIndexPage() {
-  const { wallet, hafalan, recentKarya, recentPosts } = useLoaderData<typeof loader>();
+  const { wallet, hafalan, recentKarya } = useLoaderData<typeof loader>();
   // context user currently unused; retain hook call if future personalization needed
   useOutletContext<UserFromContext>();
 
@@ -200,14 +175,6 @@ export default function DashboardIndexPage() {
       bgColor: 'bg-blue-50',
     },
     {
-      title: 'Join Diskusi',
-      description: 'Bergabung dengan komunitas',
-      icon: MessageCircle,
-      href: '/komunitas',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-    },
-    {
       title: 'Top Up Dompet',
       description: 'Isi saldo DinCoin/DirCoin',
       icon: Wallet,
@@ -226,11 +193,11 @@ export default function DashboardIndexPage() {
       progress: Math.min(hafalan.completedSurahs, 1),
     },
     {
-      title: 'Community Helper',
-      description: 'Buat 5 post di komunitas',
-      icon: Users,
-      unlocked: recentPosts.length >= 5,
-      progress: Math.min(recentPosts.length / 5, 1),
+      title: 'Consistent Learner',
+      description: 'Selesaikan hafalan 10 surat',
+      icon: Target,
+      unlocked: hafalan.completedSurahs >= 10,
+      progress: Math.min(hafalan.completedSurahs / 10, 1),
     },
     {
       title: 'Creative Soul',
@@ -250,7 +217,7 @@ export default function DashboardIndexPage() {
     >
       {/* Stats Cards */}
       <motion.div variants={itemVariants}>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Saldo Dompet</CardTitle>
@@ -304,23 +271,6 @@ export default function DashboardIndexPage() {
               </Button>
             </CardContent>
           </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Kontribusi</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{recentPosts.length}</div>
-              <p className="text-xs text-muted-foreground">Post di Komunitas</p>
-              <Button size="sm" variant="outline" className="mt-2 w-full" asChild>
-                <Link to="/komunitas">
-                  <MessageCircle className="w-3 h-3 mr-1" />
-                  Buat Post
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </motion.div>
 
@@ -335,7 +285,7 @@ export default function DashboardIndexPage() {
             <CardDescription>Akses cepat ke fitur yang sering digunakan</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {quickActions.map((action, index) => (
                 <Link key={index} to={action.href}>
                   <Card className="hover:shadow-md transition-all duration-300 cursor-pointer group">
@@ -358,81 +308,40 @@ export default function DashboardIndexPage() {
         </Card>
       </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Recent Activity */}
-        <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5" />
-                Aktivitas Terbaru
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {recentPosts.length > 0 ? (
-                recentPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
-                  >
-                    <MessageCircle className="w-4 h-4 text-primary mt-1" />
-                    <div className="flex-1">
-                      <p className="font-medium text-sm line-clamp-1">{post.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(post.createdAt).toLocaleDateString('id-ID')}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6">
-                  <MessageCircle className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Belum ada aktivitas terbaru</p>
-                  <Button size="sm" variant="outline" className="mt-2" asChild>
-                    <Link to="/komunitas">Mulai Berinteraksi</Link>
-                  </Button>
+      <motion.div variants={itemVariants}>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5" />
+              Achievements
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {achievements.map((achievement, index) => (
+              <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
+                <div
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center ${achievement.unlocked ? 'bg-green-100' : 'bg-gray-100'}`}
+                >
+                  <achievement.icon
+                    className={`w-5 h-5 ${achievement.unlocked ? 'text-green-600' : 'text-gray-400'}`}
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Achievements */}
-        <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5" />
-                Achievements
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {achievements.map((achievement, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
-                  <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${achievement.unlocked ? 'bg-green-100' : 'bg-gray-100'}`}
-                  >
-                    <achievement.icon
-                      className={`w-5 h-5 ${achievement.unlocked ? 'text-green-600' : 'text-gray-400'}`}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm">{achievement.title}</h4>
-                    <p className="text-xs text-muted-foreground">{achievement.description}</p>
-                    <Progress value={achievement.progress * 100} className="h-1 mt-1" />
-                  </div>
-                  {achievement.unlocked && (
-                    <Badge variant="secondary" className="text-xs">
-                      <Star className="w-3 h-3 mr-1" />
-                      Unlocked
-                    </Badge>
-                  )}
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">{achievement.title}</h4>
+                  <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                  <Progress value={achievement.progress * 100} className="h-1 mt-1" />
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+                {achievement.unlocked && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Star className="w-3 h-3 mr-1" />
+                    Unlocked
+                  </Badge>
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Recent Works & Learning Progress */}
       <div className="grid gap-6 md:grid-cols-2">

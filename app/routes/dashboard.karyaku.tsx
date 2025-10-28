@@ -45,7 +45,7 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Kelola karya tulis, artikel, dan konten kreatif Anda dengan mudah. Upload, edit, dan publikasikan karya untuk komunitas santri.',
+        'Kelola karya tulis, artikel, dan konten kreatif Anda dengan mudah. Upload, edit, dan publikasikan karya untuk pembaca santri.',
     },
   ];
 };
@@ -492,7 +492,7 @@ export default function KaryakuPage() {
               Karya Saya
             </h1>
             <p className="text-muted-foreground mt-2">
-              Kelola dan publikasikan karya tulis Anda untuk komunitas santri
+              Kelola dan publikasikan karya tulis Anda untuk pembaca santri
             </p>
           </div>
           <div className="flex gap-3">
@@ -1474,7 +1474,7 @@ Tuliskan kesimpulan dari artikel Anda...
                 <p className="text-muted-foreground mb-6">
                   {search
                     ? 'Tidak ada karya yang cocok dengan pencarian Anda.'
-                    : 'Mulai tulis karya pertama Anda dan bagikan dengan komunitas santri!'}
+                    : 'Mulai tulis karya pertama Anda dan bagikan dengan pembaca santri!'}
                 </p>
                 {!search && (
                   <Link to="/dashboard/karyaku/tulis">

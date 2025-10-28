@@ -27,12 +27,12 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Jelajahi semua fitur lengkap platform Santri Online untuk pembelajaran Islam digital, hafalan Al-Quran, komunitas, dan marketplace karya.',
+        'Jelajahi semua fitur lengkap platform Santri Online untuk pembelajaran Islam digital, hafalan Al-Quran, marketplace karya, dan layanan sertifikat.',
     },
     {
       name: 'keywords',
       content:
-        'fitur santri online, hafalan quran, marketplace karya, komunitas islam, biolink, sertifikat digital',
+        'fitur santri online, hafalan quran, marketplace karya, biolink, sertifikat digital, dompet santri',
     },
   ];
 };
@@ -165,8 +165,8 @@ export default function FiturLengkapPage() {
       icon: Shield,
     },
     {
-      title: 'Community Driven',
-      description: 'Dibangun bersama dan untuk komunitas santri Indonesia',
+      title: 'Didukung Santri Aktif',
+      description: 'Dibangun bersama santri Indonesia dengan fokus dakwah digital',
       icon: Heart,
     },
     {

@@ -209,58 +209,6 @@ export const orders = sqliteTable('orders', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 });
 
-// Tabel Komunitas
-export const community_post = sqliteTable('community_post', {
-  id: text('id').primaryKey(),
-  authorId: text('author_id')
-    .notNull()
-    .references(() => user.id),
-  title: text('title').notNull(),
-  content: text('content').notNull(),
-  category: text('category', {
-    enum: ['hafalan', 'kajian', 'pengalaman', 'tanya-jawab', 'event', 'teknologi', 'umum'],
-  })
-    .notNull()
-    .default('umum'),
-  likesCount: integer('likes_count').notNull().default(0),
-  commentsCount: integer('comments_count').notNull().default(0),
-  viewsCount: integer('views_count').notNull().default(0),
-  isPublished: integer('is_published', { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }),
-});
-
-export const post_comment = sqliteTable('post_comment', {
-  id: text('id').primaryKey(),
-  postId: text('post_id')
-    .notNull()
-    .references(() => community_post.id),
-  authorId: text('author_id')
-    .notNull()
-    .references(() => user.id),
-  content: text('content').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }),
-});
-
-export const post_like = sqliteTable(
-  'post_like',
-  {
-    id: text('id').primaryKey(),
-    postId: text('post_id')
-      .notNull()
-      .references(() => community_post.id),
-    userId: text('user_id')
-      .notNull()
-      .references(() => user.id),
-    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  },
-  (table) => ({
-    // Ensure one like per user per post
-    uniqueLike: primaryKey({ columns: [table.postId, table.userId] }),
-  }),
-);
-
 // Tabel Akademik: Hafalan Quran
 export const quran_surah = sqliteTable('quran_surah', {
   id: integer('id').primaryKey(),
@@ -471,9 +419,6 @@ export const userRelations = relations(user, ({ one, many }) => ({
   }),
   karya: many(karya),
   orders: many(orders),
-  posts: many(community_post),
-  comments: many(post_comment),
-  likes: many(post_like),
   hafalanQuran: many(user_hafalan_quran),
   progresDiniyah: many(user_progres_diniyah),
   ijazahDiterbitkan: many(ijazah, { relationName: 'penerbit' }),
@@ -551,37 +496,5 @@ export const userProgresDiniyahRelations = relations(user_progres_diniyah, ({ on
   pelajaran: one(diniyah_pelajaran, {
     fields: [user_progres_diniyah.pelajaranId],
     references: [diniyah_pelajaran.id],
-  }),
-}));
-
-// Community Relations
-export const communityPostRelations = relations(community_post, ({ one, many }) => ({
-  author: one(user, {
-    fields: [community_post.authorId],
-    references: [user.id],
-  }),
-  comments: many(post_comment),
-  likes: many(post_like),
-}));
-
-export const postCommentRelations = relations(post_comment, ({ one }) => ({
-  post: one(community_post, {
-    fields: [post_comment.postId],
-    references: [community_post.id],
-  }),
-  author: one(user, {
-    fields: [post_comment.authorId],
-    references: [user.id],
-  }),
-}));
-
-export const postLikeRelations = relations(post_like, ({ one }) => ({
-  post: one(community_post, {
-    fields: [post_like.postId],
-    references: [community_post.id],
-  }),
-  user: one(user, {
-    fields: [post_like.userId],
-    references: [user.id],
   }),
 }));

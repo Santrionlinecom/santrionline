@@ -9,10 +9,10 @@ export function Footer() {
       { name: 'Manhaj Aswaja', href: '/manhaj' },
       { name: "Kitab Mu'tabarah", href: '/kitab' },
     ],
-    komunitas: [
-      { name: 'Forum Diskusi', href: '/komunitas' },
-      { name: 'Kajian Online', href: '/kajian' },
-      { name: 'Newsletter', href: '/newsletter' },
+    layanan: [
+      { name: 'Marketplace Karya', href: '/marketplace' },
+      { name: 'Top Up Dompet', href: '/dashboard/dompet' },
+      { name: 'Program Sertifikat', href: '/sertifikat' },
     ],
     belajar: [
       { name: 'Hafalan Al-Quran', href: '/dashboard/hafalan' },
@@ -88,11 +88,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Community Links */}
+          {/* Services Links */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">Komunitas</h3>
+            <h3 className="font-semibold text-foreground">Layanan</h3>
             <ul className="space-y-2">
-              {footerLinks.komunitas.map((link) => (
+              {footerLinks.layanan.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}

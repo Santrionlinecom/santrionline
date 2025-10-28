@@ -7,11 +7,5 @@ wrangler d1 execute santri-db --local --command="CREATE TABLE IF NOT EXISTS kary
 echo Creating orders table...
 wrangler d1 execute santri-db --local --command="CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, buyer_id TEXT NOT NULL, karya_id TEXT NOT NULL, total_amount INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at INTEGER NOT NULL);"
 
-echo Creating community_post table...
-wrangler d1 execute santri-db --local --command="CREATE TABLE IF NOT EXISTS community_post (id TEXT PRIMARY KEY, author_id TEXT NOT NULL, title TEXT NOT NULL, content TEXT NOT NULL, created_at INTEGER NOT NULL);"
-
-echo Creating post_comment table...
-wrangler d1 execute santri-db --local --command="CREATE TABLE IF NOT EXISTS post_comment (id TEXT PRIMARY KEY, post_id TEXT NOT NULL, author_id TEXT NOT NULL, content TEXT NOT NULL, created_at INTEGER NOT NULL);"
-
 echo All missing tables created successfully!
 pause

@@ -192,9 +192,9 @@ export default function Index() {
         gradient: 'from-blue-500 to-blue-600',
       },
       {
-        icon: Users,
-        title: 'Komunitas Aswaja',
-        description: 'Diskusi moderasi & kolaborasi aman berbasis manhaj lurus.',
+        icon: Award,
+        title: 'Program Sertifikat',
+        description: 'Ikuti ujian bersanad dan dapatkan kredensial resmi.',
         gradient: 'from-green-500 to-green-600',
       },
       {
@@ -236,7 +236,7 @@ export default function Index() {
       { icon: Users, label: 'Santri Aktif', value: '2,500+', color: 'text-blue-600' },
       { icon: BookOpen, label: 'Hafalan', value: '8,000+', color: 'text-green-600' },
       { icon: Award, label: 'Sertifikat', value: '1,200+', color: 'text-purple-600' },
-      { icon: Heart, label: 'Komunitas', value: '25+', color: 'text-red-600' },
+      { icon: Heart, label: 'Program Aktif', value: '25+', color: 'text-red-600' },
     ],
     [],
   );
@@ -270,12 +270,12 @@ export default function Index() {
       pembelajaran: {
         title: 'Pembelajaran Ilmu Syariah',
         description:
-          'Akses materi pembelajaran Islam berdasarkan kitab-kitab mu&apos;tabarah dari ulama 4 madzhab dengan sistem pembelajaran komunitas antar santri.',
+          'Akses materi pembelajaran Islam berdasarkan kitab-kitab mu&apos;tabarah dari ulama 4 madzhab dengan sistem pembelajaran terstruktur untuk setiap santri.',
         features: [
           'Kajian kitab kuning dari 4 madzhab fiqih',
           'Biografi dan karya ulama Ahli Sunnah',
           'Materi aqidah, fiqih, hadits, dan tasawuf',
-          'Diskusi interaktif dengan metode halaqah',
+          'Pendalaman materi dengan metode halaqah terarah',
         ],
         icon: GraduationCap,
       },
@@ -326,12 +326,17 @@ export default function Index() {
         features: ['Target harian', "Muroja'ah otomatis", 'Progress tracking', 'Ijazah digital'],
       },
       {
-        icon: Users,
-        title: 'Komunitas',
-        description: 'Bergabung dengan santri se-manhaj di seluruh Indonesia',
-        link: '/komunitas',
+        icon: Wallet,
+        title: 'Dompet Santri',
+        description: 'Kelola DinCoin dan DirCoin untuk transaksi syariah',
+        link: '/dashboard/dompet',
         color: 'bg-green-500',
-        features: ['Forum diskusi', 'Kajian online', 'Mentoring', 'Study group'],
+        features: [
+          'Top up aman',
+          'Riwayat transaksi',
+          'Pengelolaan saldo',
+          'Integrasi marketplace',
+        ],
       },
       {
         icon: Award,
