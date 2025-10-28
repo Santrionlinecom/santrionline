@@ -10,13 +10,12 @@ import {
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
 import { cn } from "~/lib/cn";
-import { 
-  BookOpen, 
-  Users, 
-  ShoppingCart, 
+import {
+  BookOpen,
+  Users,
+  ShoppingCart,
   Info,
   GraduationCap,
-  MessageCircle,
   Award,
   Menu
 } from "lucide-react";
@@ -72,23 +71,6 @@ const navigationItems = [
         href: "/kitab",
         description: "Koleksi kitab-kitab dari ulama salaf",
         icon: BookOpen
-      }
-    ]
-  },
-  {
-    title: "Komunitas",
-    items: [
-      {
-        title: "Forum Diskusi",
-        href: "/komunitas",
-        description: "Bergabung dalam diskusi dengan sesama santri",
-        icon: MessageCircle
-      },
-      {
-        title: "Grup Belajar",
-        href: "/komunitas/grup",
-        description: "Temukan atau buat grup belajar",
-        icon: Users
       }
     ]
   },

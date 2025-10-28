@@ -9,10 +9,10 @@ export function Footer() {
       { name: 'Manhaj Aswaja', href: '/manhaj' },
       { name: "Kitab Mu'tabarah", href: '/kitab' },
     ],
-    komunitas: [
-      { name: 'Forum Diskusi', href: '/komunitas' },
+    program: [
       { name: 'Kajian Online', href: '/kajian' },
       { name: 'Newsletter', href: '/newsletter' },
+      { name: 'Marketplace', href: '/marketplace' },
     ],
     belajar: [
       { name: 'Hafalan Al-Quran', href: '/dashboard/hafalan' },
@@ -88,11 +88,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Community Links */}
+          {/* Program Links */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">Komunitas</h3>
+            <h3 className="font-semibold text-foreground">Program</h3>
             <ul className="space-y-2">
-              {footerLinks.komunitas.map((link) => (
+              {footerLinks.program.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}

@@ -278,15 +278,15 @@ export default function KontakPage() {
                     </div>
                   </Link>
                   <Link
-                    to="/komunitas"
+                    to="/marketplace"
                     className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors group"
                   >
                     <User className="w-5 h-5 text-blue-600 mr-3" />
                     <div>
                       <div className="font-medium text-gray-900 group-hover:text-blue-600">
-                        Komunitas
+                        Marketplace Karya
                       </div>
-                      <div className="text-sm text-gray-600">Diskusi dengan sesama pengguna</div>
+                      <div className="text-sm text-gray-600">Temukan karya terbaik dari para santri</div>
                     </div>
                   </Link>
                 </div>

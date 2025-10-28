@@ -9,7 +9,6 @@ import {
   Shield,
   GraduationCap,
   Coins,
-  MessageCircle,
   ShoppingCart,
   Info,
 } from 'lucide-react';
@@ -20,7 +19,6 @@ const navItems = [
   { href: '/', label: 'Beranda', icon: Home },
   { href: '/dashboard/hafalan', label: 'Hafalan', icon: BookOpen },
   { href: '/marketplace', label: 'Market', icon: ShoppingCart },
-  { href: '/komunitas', label: 'Komunitas', icon: MessageCircle },
   { href: '/dashboard', label: 'Dashboard', icon: User, isSpecial: true },
 ];
 

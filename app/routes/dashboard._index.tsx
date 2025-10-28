@@ -3,7 +3,7 @@ import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useOutletContext, Link } from '@remix-run/react';
 import { motion } from 'framer-motion';
 // server-only imports in loader
-import { dompet_santri, user_hafalan_quran, quran_surah, community_post, karya } from '~/db/schema';
+import { dompet_santri, user_hafalan_quran, quran_surah, karya } from '~/db/schema';
 import { eq, sql, desc } from 'drizzle-orm';
 import { log } from '~/lib/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
@@ -14,12 +14,10 @@ import {
   Wallet,
   BookCheck,
   TrendingUp,
-  Users,
   Star,
   Award,
   Target,
   BookOpen,
-  MessageCircle,
   // Heart, (unused)
   ShoppingBag,
   PlusCircle,
@@ -47,7 +45,6 @@ type HafalanSummary = {
   totalAyahs: number;
 } | null;
 type KaryaSummary = { id: string | number; title: string; price: number; createdAt: Date | string };
-type PostSummary = { id: string | number; title: string; createdAt: Date | string };
 
 function extractError(e: unknown): string {
   if (e instanceof Error) return e.message;
@@ -114,25 +111,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     log.error?.('dashboard.index.karya_error', { userId, error: msg });
   }
 
-  // Recent posts
-  let recentPosts: PostSummary[] = [];
-  try {
-    recentPosts = await db
-      .select({
-        id: community_post.id,
-        title: community_post.title,
-        createdAt: community_post.createdAt,
-      })
-      .from(community_post)
-      .where(eq(community_post.authorId, userId))
-      .orderBy(desc(community_post.createdAt))
-      .limit(3);
-  } catch (e: unknown) {
-    const msg = extractError(e);
-    errors.push({ step: 'community_post', error: msg });
-    log.error?.('dashboard.index.community_post_error', { userId, error: msg });
-  }
-
   // Calculate percentage based on completed surahs out of 114 total surahs in Quran
   const surahProgressPercentage = hafalanData?.completedSurahs
     ? Math.round((hafalanData.completedSurahs / 114) * 100)
@@ -151,13 +129,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       totalAyahs: hafalanData?.totalAyahs ?? 0,
     },
     recentKarya,
-    recentPosts,
     partialErrors: errors.length ? errors : undefined,
   });
 }
 
 export default function DashboardIndexPage() {
-  const { wallet, hafalan, recentKarya, recentPosts } = useLoaderData<typeof loader>();
+  const { wallet, hafalan, recentKarya } = useLoaderData<typeof loader>();
   // context user currently unused; retain hook call if future personalization needed
   useOutletContext<UserFromContext>();
 
@@ -200,10 +177,10 @@ export default function DashboardIndexPage() {
       bgColor: 'bg-blue-50',
     },
     {
-      title: 'Join Diskusi',
-      description: 'Bergabung dengan komunitas',
-      icon: MessageCircle,
-      href: '/komunitas',
+      title: 'Eksplor Marketplace',
+      description: 'Temukan karya islami terbaru',
+      icon: ShoppingBag,
+      href: '/marketplace',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
@@ -226,11 +203,11 @@ export default function DashboardIndexPage() {
       progress: Math.min(hafalan.completedSurahs, 1),
     },
     {
-      title: 'Community Helper',
-      description: 'Buat 5 post di komunitas',
-      icon: Users,
-      unlocked: recentPosts.length >= 5,
-      progress: Math.min(recentPosts.length / 5, 1),
+      title: 'Marketplace Contributor',
+      description: 'Upload karya pertama Anda ke marketplace',
+      icon: ShoppingBag,
+      unlocked: recentKarya.length > 0,
+      progress: Math.min(recentKarya.length, 1),
     },
     {
       title: 'Creative Soul',
@@ -307,16 +284,16 @@ export default function DashboardIndexPage() {
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Kontribusi</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Kontribusi Marketplace</CardTitle>
+              <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{recentPosts.length}</div>
-              <p className="text-xs text-muted-foreground">Post di Komunitas</p>
+              <div className="text-2xl font-bold text-orange-600">{recentKarya.length}</div>
+              <p className="text-xs text-muted-foreground">Karya yang diunggah</p>
               <Button size="sm" variant="outline" className="mt-2 w-full" asChild>
-                <Link to="/komunitas">
-                  <MessageCircle className="w-3 h-3 mr-1" />
-                  Buat Post
+                <Link to="/dashboard/karyaku">
+                  <PlusCircle className="w-3 h-3 mr-1" />
+                  Kelola Karya
                 </Link>
               </Button>
             </CardContent>
@@ -369,30 +346,15 @@ export default function DashboardIndexPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {recentPosts.length > 0 ? (
-                recentPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
-                  >
-                    <MessageCircle className="w-4 h-4 text-primary mt-1" />
-                    <div className="flex-1">
-                      <p className="font-medium text-sm line-clamp-1">{post.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(post.createdAt).toLocaleDateString('id-ID')}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6">
-                  <MessageCircle className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Belum ada aktivitas terbaru</p>
-                  <Button size="sm" variant="outline" className="mt-2" asChild>
-                    <Link to="/komunitas">Mulai Berinteraksi</Link>
-                  </Button>
-                </div>
-              )}
+              <div className="text-center py-6">
+                <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  Fitur komunitas telah dinonaktifkan. Fokuskan kontribusi Anda melalui marketplace karya.
+                </p>
+                <Button size="sm" variant="outline" className="mt-3" asChild>
+                  <Link to="/marketplace">Lihat Marketplace</Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </motion.div>

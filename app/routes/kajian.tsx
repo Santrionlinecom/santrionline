@@ -148,10 +148,10 @@ export default function KajianPage() {
                 Bergabung Gratis
               </Link>
               <Link
-                to="/komunitas"
+                to="/marketplace"
                 className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Lihat Komunitas
+                Jelajahi Marketplace
               </Link>
             </div>
           </div>
