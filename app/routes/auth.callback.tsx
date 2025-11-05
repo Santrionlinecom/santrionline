@@ -156,9 +156,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const sessionCookie = await setSessionTokens(context, {
+    type: 'supabase',
     accessToken: session.access_token,
     refreshToken: session.refresh_token ?? null,
     expiresAt: session.expires_at ?? null,
+    userId: resolvedUser.id,
   });
 
   const headers = new Headers();

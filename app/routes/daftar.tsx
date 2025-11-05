@@ -7,12 +7,13 @@ import { safeRedirect } from '~/utils/safe-redirect';
 import { motion } from 'framer-motion';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { createSupabaseServerClient } from '~/utils/supabase.server';
 import { hashPassword } from '~/lib/crypto.server';
 import { setSessionTokens } from '~/lib/session.server';
 import { getDb } from '~/db/drizzle.server';
 import { ensureWallet } from '~/lib/wallet.server';
 import { syncUserRecords } from '~/lib/user-sync.server';
+import { legacyUser } from '~/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const meta: MetaFunction = () => {
   return [
@@ -45,19 +46,6 @@ type ActionData =
       values?: { name?: string; email?: string };
     }
   | undefined;
-
-function parseSupabaseError(message: string | undefined) {
-  if (!message) return 'Registrasi gagal. Silakan coba lagi.';
-  try {
-    const parsed = JSON.parse(message);
-    if (parsed && typeof parsed === 'object' && typeof parsed.message === 'string') {
-      return parsed.message;
-    }
-  } catch (error) {
-    // ignore
-  }
-  return message;
-}
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -102,17 +90,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
     );
   }
 
-  const supabase = createSupabaseServerClient(context);
-  const { data, error } = await supabase.auth.signUpWithPassword({
-    email: email as string,
-    password: password as string,
-    data: { full_name: name },
+  const db = getDb(context);
+  const normalizedEmail = (email as string).toLowerCase();
+  const existingUser = await db.query.legacyUser.findFirst({
+    where: eq(legacyUser.email, normalizedEmail),
   });
 
-  if (error || !data.user) {
+  if (existingUser) {
     return json<ActionData>(
       {
-        formError: parseSupabaseError(error?.message) ?? 'Registrasi gagal. Silakan coba lagi.',
+        formError: 'Email sudah terdaftar. Silakan gunakan email lain atau masuk.',
         values: {
           name: name as string,
           email: email as string,
@@ -122,60 +109,35 @@ export async function action({ request, context }: ActionFunctionArgs) {
     );
   }
 
-  const supabaseUser = data.user;
-  if (!supabaseUser.id) {
-    return json<ActionData>(
-      {
-        formError: 'Registrasi gagal karena data akun tidak lengkap.',
-        values: {
-          name: name as string,
-          email: email as string,
-        },
-      },
-      { status: 500 },
-    );
-  }
-
-  const db = getDb(context);
   const passwordHash = await hashPassword(password as string);
+  const userId = crypto.randomUUID();
 
   await syncUserRecords({
     context,
     db,
-    userId: supabaseUser.id,
-    email: (supabaseUser.email ?? (email as string)).toLowerCase(),
+    userId,
+    email: normalizedEmail,
     name: name as string,
     avatarUrl: null,
     passwordHash,
   });
 
   try {
-    await ensureWallet(db, supabaseUser.id);
+    await ensureWallet(db, userId);
   } catch (walletError) {
     console.warn('Failed to ensure wallet after registration', walletError);
   }
 
-  const session = data.session;
-
-  if (session && session.access_token) {
-    const sessionCookie = await setSessionTokens(context, {
-      accessToken: session.access_token,
-      refreshToken: session.refresh_token ?? null,
-      expiresAt: session.expires_at ?? null,
-    });
-
-    const headers = new Headers();
-    headers.append('Set-Cookie', sessionCookie);
-
-    return redirect(redirectTo, { headers });
-  }
-
-  const params = new URLSearchParams({
-    success: 'Registrasi berhasil. Silakan cek email Anda untuk verifikasi akun.',
+  const sessionCookie = await setSessionTokens(context, {
+    type: 'local',
+    userId,
+    expiresAt: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
   });
-  params.set('redirectTo', redirectTo);
 
-  return redirect(`/masuk?${params.toString()}`);
+  const headers = new Headers();
+  headers.append('Set-Cookie', sessionCookie);
+
+  return redirect(redirectTo, { headers });
 }
 
 export default function DaftarPage() {
