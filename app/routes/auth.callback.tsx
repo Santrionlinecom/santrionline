@@ -93,7 +93,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const name = metadataFullName ?? metadataName ?? email;
   const avatarUrl = metadataAvatar ?? null;
-  const role = isAdminEmail(email, context) ? 'admin' : 'santri';
+  const role = isAdminEmail(email, context) ? 'admin_tech' : 'santri';
 
   const db = getDb(context);
 

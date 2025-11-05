@@ -4,10 +4,11 @@ import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { Link, Outlet, useLoaderData, useNavigation } from '@remix-run/react';
 import { MobileNav } from '~/components/mobile-nav';
-import { user as userSchema } from '~/db/schema';
+import { user as userSchema, type AppRole } from '~/db/schema';
 import { eq } from 'drizzle-orm';
 // server-only modules (session, db, wallet) imported dynamically in loader
 import { Skeleton } from '~/components/ui/skeleton';
+import { isAdminRole } from '~/lib/rbac';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { requireUser, logout } = await import('~/lib/session.server');
@@ -45,6 +46,7 @@ import {
   Shield,
   GraduationCap,
   Link as LinkIcon,
+  Target,
 } from 'lucide-react';
 
 // Memoized Navigation Component
@@ -62,7 +64,7 @@ const SidebarNav = memo(
   }: {
     navLinks: NavItem[];
     adminLinks: NavItem[];
-    userRole: string;
+    userRole: AppRole;
   }) => (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navLinks.map((link) => (
@@ -75,7 +77,7 @@ const SidebarNav = memo(
           {link.label}
         </Link>
       ))}
-      {userRole === 'admin' && (
+      {isAdminRole(userRole) && (
         <>
           <div className="my-2 border-t"></div>
           {adminLinks.map((link) => (
@@ -151,6 +153,7 @@ export default function DashboardLayout() {
     () => [
       { to: '/dashboard', icon: Home, label: 'Ringkasan' },
       { to: '/dashboard/hafalan', icon: BookOpen, label: 'Hafalan' },
+      { to: '/dashboard/tahfidz', icon: Target, label: 'Tahfidz' },
       { to: '/dashboard/dompet', icon: Wallet, label: 'Dompet' },
       { to: '/dashboard/karyaku', icon: Palette, label: 'Karyaku' },
       { to: '/dashboard/biolink', icon: LinkIcon, label: 'Biolink Analytics' },

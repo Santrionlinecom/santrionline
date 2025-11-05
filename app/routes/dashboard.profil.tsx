@@ -2,7 +2,13 @@ import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from '@remi
 import { json } from '@remix-run/cloudflare';
 import { Form, useLoaderData, useNavigation } from '@remix-run/react';
 // NOTE: server-only modules dynamically imported within loader/action
-import { user as userSchema, dompet_santri, user_hafalan_quran, quran_surah } from '~/db/schema';
+import {
+  user as userSchema,
+  dompet_santri,
+  user_hafalan_quran,
+  quran_surah,
+  type AppRole,
+} from '~/db/schema';
 import { eq, sql } from 'drizzle-orm';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -35,6 +41,7 @@ import {
   Star,
   Wallet,
 } from 'lucide-react';
+import { isAdminRole } from '~/lib/rbac';
 
 export const meta: MetaFunction = () => {
   return [
@@ -189,6 +196,28 @@ export default function ProfilPage() {
   };
 
   const userLevel = getUserLevel();
+
+  const role = (user.role ?? 'santri') as AppRole;
+  const roleLabel: Record<AppRole, string> = {
+    pengasuh: 'Pengasuh',
+    pengurus: 'Pengurus',
+    asatidz: 'Asatidz',
+    wali_kelas: 'Wali Kelas',
+    wali_santri: 'Wali Santri',
+    santri: 'Santri',
+    calon_santri: 'Calon Santri',
+    admin_tech: 'Admin Tech',
+    admin: 'Admin',
+  };
+  const roleBadgeClass = isAdminRole(role)
+    ? 'bg-blue-100 text-blue-800 border-blue-200'
+    : role === 'asatidz'
+      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      : role === 'pengurus' || role === 'pengasuh'
+        ? 'bg-amber-100 text-amber-800 border-amber-200'
+        : role === 'wali_kelas' || role === 'wali_santri'
+          ? 'bg-purple-100 text-purple-800 border-purple-200'
+          : 'bg-gray-100 text-gray-700 border-gray-200';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -346,9 +375,7 @@ export default function ProfilPage() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {user.role === 'admin' ? 'Administrator' : 'Santri'}
-                  </Badge>
+                  <Badge className={`text-xs ${roleBadgeClass}`}>{roleLabel[role]}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Bergabung</span>

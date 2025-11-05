@@ -13,6 +13,8 @@ import {
   Info,
 } from 'lucide-react';
 import { cn } from '~/lib/utils';
+import { isAdminRole } from '~/lib/rbac';
+import type { AppRole } from '~/db/schema';
 
 // Daftar item navigasi mobile yang mengikuti header
 const navItems = [
@@ -24,7 +26,7 @@ const navItems = [
 
 interface MobileNavProps {
   user: {
-    role: string;
+    role: AppRole;
     dincoin?: number;
     dircoin?: number;
   } | null;
@@ -138,7 +140,7 @@ export function MobileNav({ user }: MobileNavProps) {
       </nav>
 
       {/* Admin menu jika user adalah admin - sebagai footer extra section */}
-      {user.role === 'admin' && (
+      {isAdminRole(user.role) && (
         <nav className="flex h-14 items-center justify-around border-t bg-muted/20 px-2">
           {[
             { to: '/dashboard/admin/pengguna', icon: Shield, label: 'Pengguna' },

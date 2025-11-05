@@ -3,7 +3,7 @@ import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useOutletContext, Link } from '@remix-run/react';
 import { motion } from 'framer-motion';
 // server-only imports in loader
-import { dompet_santri, user_hafalan_quran, quran_surah, karya } from '~/db/schema';
+import { dompet_santri, user_hafalan_quran, quran_surah, karya, type AppRole } from '~/db/schema';
 import { eq, sql, desc } from 'drizzle-orm';
 import { log } from '~/lib/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
@@ -33,7 +33,7 @@ type UserFromContext = {
     id: string;
     name: string;
     email: string;
-    role: 'santri' | 'admin';
+    role: AppRole;
   };
 };
 
@@ -349,7 +349,8 @@ export default function DashboardIndexPage() {
               <div className="text-center py-6">
                 <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  Fitur komunitas telah dinonaktifkan. Fokuskan kontribusi Anda melalui marketplace karya.
+                  Fitur komunitas telah dinonaktifkan. Fokuskan kontribusi Anda melalui marketplace
+                  karya.
                 </p>
                 <Button size="sm" variant="outline" className="mt-3" asChild>
                   <Link to="/marketplace">Lihat Marketplace</Link>
