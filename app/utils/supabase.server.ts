@@ -37,6 +37,17 @@ type OAuthOptions = {
   };
 };
 
+type SignInWithPasswordCredentials = {
+  email: string;
+  password: string;
+};
+
+type SignUpWithPasswordCredentials = {
+  email: string;
+  password: string;
+  data?: Record<string, unknown> | null;
+};
+
 export type ExchangeCodeForSessionConfig = {
   authCode: string;
   redirectTo: string;
@@ -96,15 +107,14 @@ class SupabaseAuthApi {
   }
 
   #headers(accessToken?: string) {
+    const token = accessToken && accessToken.length > 0 ? accessToken : this.#config.anonKey;
+
     const headers = new Headers({
       apikey: this.#config.anonKey,
+      Authorization: `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     });
-
-    if (accessToken) {
-      headers.set('Authorization', `Bearer ${accessToken}`);
-    }
 
     return headers;
   }
@@ -283,6 +293,140 @@ class SupabaseAuthApi {
       return { error: null };
     } catch (error) {
       return {
+        error: { message: error instanceof Error ? error.message : 'Unknown Supabase error.' },
+      };
+    }
+  }
+
+  async signInWithPassword({ email, password }: SignInWithPasswordCredentials): Promise<{
+    data: { session: SupabaseSession | null; user: SupabaseAuthUser | null };
+    error: SupabaseAuthError | null;
+  }> {
+    try {
+      const response = await this.#fetch(
+        `${this.#resolveUrl('/auth/v1/token')}?grant_type=password`,
+        {
+          method: 'POST',
+          headers: this.#headers(),
+          body: JSON.stringify({ email, password }),
+        },
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        return {
+          data: { session: null, user: null },
+          error: {
+            message: message || 'Failed to sign in with email and password.',
+            status: response.status,
+          },
+        };
+      }
+
+      const payload = (await response.json()) as {
+        access_token: string;
+        refresh_token?: string | null;
+        expires_in?: number;
+        expires_at?: number | null;
+        token_type?: string;
+        provider_token?: string | null;
+        user?: SupabaseAuthUser | null;
+      };
+
+      const expiresIn = payload.expires_in ?? 0;
+      const session: SupabaseSession = {
+        access_token: payload.access_token,
+        refresh_token: payload.refresh_token ?? null,
+        expires_in: expiresIn,
+        expires_at:
+          payload.expires_at ?? (expiresIn > 0 ? Math.floor(Date.now() / 1000) + expiresIn : null),
+        token_type: payload.token_type ?? 'bearer',
+        provider_token: payload.provider_token ?? null,
+        user: payload.user ?? null,
+      };
+
+      this.#sessionTokens = {
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token ?? null,
+      };
+
+      return {
+        data: { session, user: session.user ?? payload.user ?? null },
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: { session: null, user: null },
+        error: { message: error instanceof Error ? error.message : 'Unknown Supabase error.' },
+      };
+    }
+  }
+
+  async signUpWithPassword({ email, password, data }: SignUpWithPasswordCredentials): Promise<{
+    data: { session: SupabaseSession | null; user: SupabaseAuthUser | null };
+    error: SupabaseAuthError | null;
+  }> {
+    try {
+      const response = await this.#fetch(this.#resolveUrl('/auth/v1/signup'), {
+        method: 'POST',
+        headers: this.#headers(),
+        body: JSON.stringify({ email, password, data: data ?? undefined }),
+      });
+
+      if (!response.ok) {
+        const message = await response.text();
+        return {
+          data: { session: null, user: null },
+          error: {
+            message: message || 'Failed to sign up with email and password.',
+            status: response.status,
+          },
+        };
+      }
+
+      const payload = (await response.json()) as {
+        user?: SupabaseAuthUser | null;
+        access_token?: string;
+        refresh_token?: string | null;
+        expires_in?: number;
+        expires_at?: number | null;
+        token_type?: string;
+        provider_token?: string | null;
+        session?: SupabaseSession | null;
+      };
+
+      let session: SupabaseSession | null = null;
+      if (payload.session) {
+        session = payload.session;
+      } else if (payload.access_token) {
+        const expiresIn = payload.expires_in ?? 0;
+        session = {
+          access_token: payload.access_token,
+          refresh_token: payload.refresh_token ?? null,
+          expires_in: expiresIn,
+          expires_at:
+            payload.expires_at ??
+            (expiresIn > 0 ? Math.floor(Date.now() / 1000) + expiresIn : null),
+          token_type: payload.token_type ?? 'bearer',
+          provider_token: payload.provider_token ?? null,
+          user: payload.user ?? null,
+        };
+      }
+
+      if (session) {
+        this.#sessionTokens = {
+          accessToken: session.access_token,
+          refreshToken: session.refresh_token ?? null,
+        };
+      }
+
+      return {
+        data: { session, user: payload.user ?? session?.user ?? null },
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: { session: null, user: null },
         error: { message: error instanceof Error ? error.message : 'Unknown Supabase error.' },
       };
     }

@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { Form, useSearchParams, Link } from '@remix-run/react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/cloudflare';
+import { Form, useActionData, useNavigation, useSearchParams, Link } from '@remix-run/react';
 import { json, redirect } from '@remix-run/cloudflare';
 import { safeRedirect } from '~/utils/safe-redirect';
 
@@ -14,9 +14,135 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { createSupabaseServerClient } from '~/utils/supabase.server';
+import { setSessionTokens } from '~/lib/session.server';
+import { getDb } from '~/db/drizzle.server';
+import { ensureWallet } from '~/lib/wallet.server';
+import { syncUserRecords } from '~/lib/user-sync.server';
+
+type ActionData =
+  | {
+      formError?: string;
+      fieldErrors?: { email?: string | null; password?: string | null };
+      values?: { email?: string };
+    }
+  | undefined;
+
+function parseSupabaseError(message: string | undefined) {
+  if (!message) return 'Email atau password tidak valid.';
+  try {
+    const parsed = JSON.parse(message);
+    if (parsed && typeof parsed === 'object' && typeof parsed.message === 'string') {
+      return parsed.message;
+    }
+  } catch (error) {
+    // ignore
+  }
+  return message;
+}
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get('intent');
+  if (intent !== 'password-login') {
+    return json({ formError: 'Permintaan tidak valid.' }, { status: 400 });
+  }
+
+  const email = formData.get('email');
+  const password = formData.get('password');
+  const redirectTo = safeRedirect(formData.get('redirectTo'));
+
+  const fieldErrors = {
+    email: typeof email === 'string' && email.trim().length > 0 ? null : 'Email wajib diisi.',
+    password:
+      typeof password === 'string' && password.length >= 6 ? null : 'Password minimal 6 karakter.',
+  } as const;
+
+  if (fieldErrors.email || fieldErrors.password) {
+    return json<ActionData>(
+      {
+        fieldErrors,
+        values: { email: typeof email === 'string' ? email : undefined },
+        formError: 'Mohon periksa kembali data yang diisi.',
+      },
+      { status: 400 },
+    );
+  }
+
+  const supabase = createSupabaseServerClient(context);
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email as string,
+    password: password as string,
+  });
+
+  if (error || !data.session) {
+    return json<ActionData>(
+      {
+        formError: parseSupabaseError(error?.message) ?? 'Email atau password tidak valid.',
+        values: { email: email as string },
+      },
+      { status: 400 },
+    );
+  }
+
+  const session = data.session;
+  const supabaseUser = session.user ?? data.user;
+
+  if (!supabaseUser || !supabaseUser.id) {
+    return json<ActionData>(
+      {
+        formError: 'Akun tidak ditemukan atau belum aktif.',
+        values: { email: email as string },
+      },
+      { status: 400 },
+    );
+  }
+
+  const metadata =
+    supabaseUser.user_metadata && typeof supabaseUser.user_metadata === 'object'
+      ? (supabaseUser.user_metadata as Record<string, unknown>)
+      : {};
+  const metadataFullName =
+    typeof metadata['full_name'] === 'string' ? (metadata['full_name'] as string) : null;
+  const metadataName = typeof metadata['name'] === 'string' ? (metadata['name'] as string) : null;
+  const metadataAvatar =
+    typeof metadata['avatar_url'] === 'string' ? (metadata['avatar_url'] as string) : null;
+
+  const db = getDb(context);
+  await syncUserRecords({
+    context,
+    db,
+    userId: supabaseUser.id,
+    email: (supabaseUser.email ?? (email as string)).toLowerCase(),
+    name: metadataFullName ?? metadataName ?? supabaseUser.email ?? (email as string),
+    avatarUrl: metadataAvatar,
+  });
+
+  try {
+    await ensureWallet(db, supabaseUser.id);
+  } catch (walletError) {
+    console.warn('Failed to ensure wallet after password login', walletError);
+  }
+
+  const sessionCookie = await setSessionTokens(context, {
+    accessToken: session.access_token,
+    refreshToken: session.refresh_token ?? null,
+    expiresAt: session.expires_at ?? null,
+  });
+
+  const headers = new Headers();
+  headers.append('Set-Cookie', sessionCookie);
+
+  return redirect(redirectTo, { headers });
+}
 
 export default function MasukPage() {
   const [searchParams] = useSearchParams();
+  const actionData = useActionData<ActionData>();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
   const successMessage = searchParams.get('success');
   const errorMessage = searchParams.get('error');
   const redirectTo = searchParams.get('redirectTo') ?? undefined;
@@ -27,10 +153,15 @@ export default function MasukPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Masuk</CardTitle>
           <CardDescription>
-            Gunakan akun Google Anda untuk mengakses dashboard Santri Online
+            Masuk menggunakan email dan password Anda atau lanjutkan dengan akun Google
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {actionData?.formError && (
+            <div className="mb-4 rounded border border-red-300 bg-red-100 p-3 text-sm text-red-700">
+              {actionData.formError}
+            </div>
+          )}
           {successMessage && (
             <div className="mb-4 rounded border border-green-300 bg-green-100 p-3 text-sm text-green-700">
               {successMessage}
@@ -41,6 +172,53 @@ export default function MasukPage() {
               {errorMessage}
             </div>
           )}
+          <Form method="post" className="grid gap-4">
+            <input type="hidden" name="intent" value="password-login" />
+            {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                defaultValue={actionData?.values?.email ?? ''}
+                aria-invalid={actionData?.fieldErrors?.email ? true : undefined}
+                aria-describedby={actionData?.fieldErrors?.email ? 'email-error' : undefined}
+              />
+              {actionData?.fieldErrors?.email && (
+                <p id="email-error" className="text-sm text-red-600">
+                  {actionData.fieldErrors.email}
+                </p>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                aria-invalid={actionData?.fieldErrors?.password ? true : undefined}
+                aria-describedby={actionData?.fieldErrors?.password ? 'password-error' : undefined}
+              />
+              {actionData?.fieldErrors?.password && (
+                <p id="password-error" className="text-sm text-red-600">
+                  {actionData.fieldErrors.password}
+                </p>
+              )}
+            </div>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Memproses...' : 'Masuk'}
+            </Button>
+          </Form>
+          <div className="mt-4 flex items-center gap-4 text-xs uppercase text-gray-500 dark:text-gray-400">
+            <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+            <span>atau</span>
+            <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+          </div>
           <Form method="post" action="/auth/login" className="grid gap-4">
             {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
             <Button type="submit" className="w-full">
