@@ -2,19 +2,20 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/cloudfla
 import { json, redirect } from '@remix-run/cloudflare';
 import { useLoaderData, Form, useNavigation, useSearchParams } from '@remix-run/react';
 import { eq, and, sql, type SQL } from 'drizzle-orm';
-import { user, dompet_santri } from '~/db/schema';
+import { user, dompet_santri, type AppRole } from '~/db/schema';
 import { getDb } from '~/db/drizzle.server';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { Input } from '~/components/ui/input';
 import { Search, Users as UsersIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { isAdminRole } from '~/lib/rbac';
 
 interface UserRow {
   id: string;
   name: string;
   email: string;
-  role: 'santri' | 'admin';
+  role: AppRole;
   createdAt: Date;
   dincoin?: number;
   dircoin?: number;
@@ -98,9 +99,24 @@ export async function action({ request, context }: ActionFunctionArgs) {
   if (typeof userId !== 'string' || typeof intent !== 'string') {
     return json({ error: 'Data tidak valid' }, { status: 400 });
   }
+  const existing = await db
+    .select({ role: user.role })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+  if (!existing.length) {
+    return json({ error: 'Pengguna tidak ditemukan' }, { status: 404 });
+  }
+  const currentRole = existing[0].role as AppRole;
   if (intent === 'promote') {
-    await db.update(user).set({ role: 'admin' }).where(eq(user.id, userId));
+    if (currentRole !== 'santri') {
+      return json({ error: 'Hanya santri yang dapat dipromosikan ke admin' }, { status: 400 });
+    }
+    await db.update(user).set({ role: 'admin_tech' }).where(eq(user.id, userId));
   } else if (intent === 'demote') {
+    if (!isAdminRole(currentRole)) {
+      return json({ error: 'Hanya admin yang dapat dikembalikan menjadi santri' }, { status: 400 });
+    }
     await db.update(user).set({ role: 'santri' }).where(eq(user.id, userId));
   }
   return redirect('/dashboard/admin/pengguna');
@@ -119,6 +135,34 @@ export default function AdminPenggunaPage() {
     if (key !== 'page') sp.set('page', '1');
     setSearchParams(sp);
   }
+
+  const ROLE_LABEL: Record<AppRole, string> = {
+    pengasuh: 'Pengasuh',
+    pengurus: 'Pengurus',
+    asatidz: 'Asatidz',
+    wali_kelas: 'Wali Kelas',
+    wali_santri: 'Wali Santri',
+    santri: 'Santri',
+    calon_santri: 'Calon Santri',
+    admin_tech: 'Admin Tech',
+    admin: 'Admin',
+  };
+
+  const badgeClass = (role: AppRole) => {
+    if (isAdminRole(role)) {
+      return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+    if (role === 'asatidz') {
+      return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+    }
+    if (role === 'wali_kelas' || role === 'wali_santri') {
+      return 'bg-purple-100 text-purple-800 border-purple-200';
+    }
+    if (role === 'pengurus' || role === 'pengasuh') {
+      return 'bg-amber-100 text-amber-800 border-amber-200';
+    }
+    return 'bg-gray-100 text-gray-700 border-gray-200';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-3 sm:p-4 lg:p-6 pb-20 sm:pb-6">
@@ -184,13 +228,9 @@ export default function AdminPenggunaPage() {
                           <div className="flex items-center gap-2 mb-2">
                             <h3 className="font-semibold text-gray-900 truncate">{u.name}</h3>
                             <Badge
-                              className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                u.role === 'admin'
-                                  ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                  : 'bg-gray-100 text-gray-700 border-gray-200'
-                              }`}
+                              className={`text-xs px-2 py-1 rounded-full font-medium ${badgeClass(u.role)}`}
                             >
-                              {u.role === 'admin' ? 'Admin' : 'Santri'}
+                              {ROLE_LABEL[u.role]}
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600 mb-3 truncate">{u.email}</p>
@@ -219,7 +259,7 @@ export default function AdminPenggunaPage() {
                               >
                                 Promote
                               </Button>
-                            ) : (
+                            ) : isAdminRole(u.role) ? (
                               <Button
                                 name="intent"
                                 value="demote"
@@ -230,7 +270,7 @@ export default function AdminPenggunaPage() {
                               >
                                 Demote
                               </Button>
-                            )}
+                            ) : null}
                           </Form>
                         </div>
                       </div>
@@ -283,13 +323,9 @@ export default function AdminPenggunaPage() {
                         </td>
                         <td className="px-6 py-4">
                           <Badge
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                              u.role === 'admin'
-                                ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                                : 'bg-gray-100 text-gray-700 border border-gray-200'
-                            }`}
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${badgeClass(u.role)}`}
                           >
-                            {u.role === 'admin' ? 'Admin' : 'Santri'}
+                            {ROLE_LABEL[u.role]}
                           </Badge>
                         </td>
                         <td className="px-6 py-4">
@@ -320,7 +356,7 @@ export default function AdminPenggunaPage() {
                               >
                                 Promote ke Admin
                               </Button>
-                            ) : (
+                            ) : isAdminRole(u.role) ? (
                               <Button
                                 name="intent"
                                 value="demote"
@@ -331,7 +367,7 @@ export default function AdminPenggunaPage() {
                               >
                                 Demote ke Santri
                               </Button>
-                            )}
+                            ) : null}
                           </Form>
                         </td>
                       </tr>

@@ -8,7 +8,7 @@ import {
 } from './supabase.server';
 import { isAdminEmail } from './admin';
 import { getDb } from '~/db/drizzle.server';
-import { users } from '~/db/schema';
+import { users, type AppRole, appRoleValues } from '~/db/schema';
 
 function getUserMetadataString(user: SupabaseAuthUser, key: string): string | null {
   const metadata = user.user_metadata;
@@ -28,7 +28,7 @@ export type SessionTokens = {
 export type SessionUser = {
   id: string;
   email: string;
-  role: 'santri' | 'admin';
+  role: AppRole;
   name?: string | null;
   avatarUrl?: string | null;
   accessToken: string;
@@ -41,6 +41,22 @@ export type SessionUser = {
 };
 
 const COOKIE_NAME = 'sb:session';
+
+const PRIVILEGED_ROLES: AppRole[] = ['pengasuh', 'pengurus', 'admin_tech', 'admin'];
+
+function normalizeRole(role: string | null | undefined): AppRole {
+  if (role && (appRoleValues as readonly string[]).includes(role)) {
+    return role as AppRole;
+  }
+  if (role === 'admin') {
+    return 'admin';
+  }
+  return 'santri';
+}
+
+function resolveRoleFromEmail(email: string | null, context: AppLoadContext): AppRole {
+  return isAdminEmail(email, context) ? 'admin_tech' : 'santri';
+}
 
 function getAppEnv(context: AppLoadContext): string | undefined {
   const env = context?.cloudflare?.env as { APP_ENV?: string } | undefined;
@@ -137,7 +153,7 @@ export async function getUser(
       return {
         id: supabaseUser.id,
         email: supabaseUser.email ?? '',
-        role: isAdminEmail(supabaseUser.email ?? null, context) ? 'admin' : 'santri',
+        role: resolveRoleFromEmail(supabaseUser.email ?? null, context),
         name: metadataFullName ?? metadataName ?? supabaseUser.email ?? null,
         avatarUrl: metadataAvatar,
         accessToken: tokens.accessToken,
@@ -157,7 +173,7 @@ export async function getUser(
     return {
       id: dbUser.id,
       email: dbUser.email,
-      role: dbUser.role,
+      role: normalizeRole(dbUser.role),
       name: dbUser.name ?? metadataFullName ?? metadataName ?? null,
       avatarUrl: dbUser.avatarUrl ?? metadataAvatar,
       accessToken: tokens.accessToken,
@@ -192,7 +208,7 @@ export async function requireAdminUserId(
   context: AppLoadContext,
 ): Promise<string> {
   const user = await requireUser(request, context);
-  if (user.role !== 'admin' && !isAdminEmail(user.email, context)) {
+  if (!PRIVILEGED_ROLES.includes(user.role) && !isAdminEmail(user.email, context)) {
     throw redirect('/dashboard?error=unauthorized');
   }
   return user.id;

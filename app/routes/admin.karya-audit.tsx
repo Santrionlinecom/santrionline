@@ -1,12 +1,13 @@
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
-import { karya_events, karya, user } from '~/db/schema';
+import { karya_events, karya, user, type AppRole } from '~/db/schema';
 import { eq, desc, inArray } from 'drizzle-orm';
 // NOTE: server-only imports (db, session) dynamically imported inside loader
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
+import { isAdminRole } from '~/lib/rbac';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { requireUserId } = await import('~/lib/session.server');
@@ -15,7 +16,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const db = getDb(context);
   // Simple role check (assumes role field) - adapt if different
   const me = await db.query.user.findFirst({ where: eq(user.id, userId) });
-  if (!me || me.role !== 'admin') {
+  if (!me || !isAdminRole(me.role as AppRole)) {
     throw new Response('Unauthorized', { status: 403 });
   }
 

@@ -50,6 +50,7 @@
     "db:create-remote": "tsx scripts/create-remote-schema.ts",
     "db:seed": "tsx drizzle/seed.ts",
     "db:seed:prod": "tsx drizzle/seed.ts",
+    "db:seed:inti": "tsx scripts/seed-inti-santri.ts",
     "preview": "wrangler deploy --dry-run",
     "deploy:full": "npm run build && npm run db:migrate:prod && npm run deploy",
     "deploy:production": "npm run test:ci && npm run deploy:full",

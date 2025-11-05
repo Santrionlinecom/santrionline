@@ -12,10 +12,11 @@ import {
 } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { eq, like, and, sql, asc, desc, inArray } from 'drizzle-orm';
-import { ulama, ulama_category, ulama_work } from '~/db/schema';
+import { ulama, ulama_category, ulama_work, type AppRole } from '~/db/schema';
 import { getDb } from '~/db/drizzle.server';
 import { requireUserId } from '~/lib/session.server';
 import { log } from '~/lib/logger';
+import { isAdminRole } from '~/lib/rbac';
 
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
@@ -73,7 +74,7 @@ type UserFromContext = {
     id: string;
     name: string;
     email: string;
-    role: 'santri' | 'admin';
+    role: AppRole;
   };
 };
 
@@ -110,7 +111,7 @@ const UlamaCard = memo(
     searchTerm: string;
     onEdit: (ulama: any) => void;
     onDelete: (ulamaId: string) => void;
-    userRole: string;
+    userRole: AppRole;
   }) => (
     <Card className="h-full overflow-hidden border shadow-md hover:shadow-lg transition-all duration-300 group">
       <CardHeader className="pb-4">
@@ -175,7 +176,7 @@ const UlamaCard = memo(
             </div>
           )}
 
-          {userRole === 'admin' && (
+          {isAdminRole(userRole) && (
             <div className="flex gap-2 pt-2 border-t">
               <Button size="sm" variant="outline" onClick={() => onEdit(ulama)} className="flex-1">
                 <Edit3 className="w-3 h-3 mr-1" />
@@ -1195,7 +1196,7 @@ export default function DashboardUlama() {
               Kelola data biografi ulama Ahli Sunnah wal Jamaah
             </p>
           </div>
-          {user.role === 'admin' && (
+          {isAdminRole(user.role as AppRole) && (
             <Button onClick={() => setIsCreateDialogOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Tambah Ulama
@@ -1530,7 +1531,7 @@ export default function DashboardUlama() {
               <p className="text-muted-foreground text-center mb-4">
                 Tidak ada data ulama yang sesuai dengan filter yang dipilih.
               </p>
-              {user.role === 'admin' && (
+              {isAdminRole(user.role as AppRole) && (
                 <Button onClick={() => setIsCreateDialogOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Tambah Ulama Pertama
