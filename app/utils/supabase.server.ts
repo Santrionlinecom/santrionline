@@ -107,15 +107,14 @@ class SupabaseAuthApi {
   }
 
   #headers(accessToken?: string) {
+    const token = accessToken && accessToken.length > 0 ? accessToken : this.#config.anonKey;
+
     const headers = new Headers({
       apikey: this.#config.anonKey,
+      Authorization: `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     });
-
-    if (accessToken) {
-      headers.set('Authorization', `Bearer ${accessToken}`);
-    }
 
     return headers;
   }
