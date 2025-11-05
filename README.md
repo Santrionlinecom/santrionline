@@ -118,6 +118,11 @@ Jangan commit `.env`.
 Panduan lengkap konfigurasi Supabase Auth tersedia di
 [`SUPABASE_AUTH_SETUP.md`](./SUPABASE_AUTH_SETUP.md).
 
+## 📱 Android Keystore
+
+Untuk kebutuhan signing aplikasi Android, ikuti langkah pada
+[`ANDROID_KEYSTORE_GUIDE.md`](./ANDROID_KEYSTORE_GUIDE.md) untuk membuat berkas keystore baru menggunakan `keytool`.
+
 ## 🩺 Health Check
 
 Worker expose endpoint:
