@@ -20,7 +20,7 @@ import { Footer } from './components/footer';
 import { MobileNav } from './components/mobile-nav';
 
 import './styles/reset.css';
-import './styles/global.css';
+import './styles/global.scss';
 import './styles/performance.css';
 import './tailwind.css';
 
