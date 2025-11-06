@@ -1,0 +1,10 @@
+$primary: #0ea5e9;
+:root { --radius: 12px; }
+body { font-family: system-ui, sans-serif; }
+.btn {
+  background: $primary;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  &:hover { background: darken($primary, 8%); }
+}

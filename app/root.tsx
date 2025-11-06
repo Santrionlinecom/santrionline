@@ -8,7 +8,8 @@ import {
   isRouteErrorResponse,
   useRouteError,
 } from '@remix-run/react';
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
+import type { LinksFunction } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { log } from '~/lib/logger';
 import { ensureWallet } from '~/lib/wallet.server';
@@ -22,7 +23,8 @@ import { MobileNav } from './components/mobile-nav';
 import './styles/reset.css';
 import './styles/global.css';
 import './styles/performance.css';
-import './tailwind.css';
+import tailwindStylesheet from './tailwind.css';
+import styles from './styles/global.scss';
 
 export const links: LinksFunction = () => [
   {
@@ -42,6 +44,8 @@ export const links: LinksFunction = () => [
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
   },
+  { rel: 'stylesheet', href: tailwindStylesheet },
+  { rel: 'stylesheet', href: styles },
 ];
 
 // Loader untuk mengambil data user di level root
