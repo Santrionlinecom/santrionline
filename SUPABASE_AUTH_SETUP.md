@@ -24,11 +24,11 @@ Integrasi Supabase Auth menggantikan implementasi Google OAuth manual. Ikuti lan
 
 ## 3. Set Environment Variables
 
-Tambahkan variabel berikut di file `.env` dan di `wrangler.toml` (bagian `[vars]`):
+Tambahkan variabel berikut di file `.env` dan konfigurasikan sebagai **secrets** di Cloudflare (jangan menaruh nilainya langsung di `wrangler.toml`):
 
 ```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-public-anon-key
+SUPABASE_URL=<url-proyek-supabase-anda>
+SUPABASE_ANON_KEY=<anon-key-proyek-supabase-anda>
 ADMIN_EMAILS="admin@santrionline.com,founder@santrionline.com"
 ```
 
