@@ -8,7 +8,7 @@ import {
 } from './supabase.server';
 import { isAdminEmail } from './admin';
 import { getDb } from '~/db/drizzle.server';
-import { users, type AppRole, appRoleValues } from '~/db/schema';
+import { legacyUser, users, type AppRole, appRoleValues } from '~/db/schema';
 
 function getUserMetadataString(user: SupabaseAuthUser, key: string): string | null {
   const metadata = user.user_metadata;
@@ -19,11 +19,19 @@ function getUserMetadataString(user: SupabaseAuthUser, key: string): string | nu
   return null;
 }
 
-export type SessionTokens = {
-  accessToken: string;
-  refreshToken?: string | null;
-  expiresAt?: number | null;
-};
+export type SessionTokens =
+  | {
+      type: 'supabase';
+      accessToken: string;
+      refreshToken?: string | null;
+      expiresAt?: number | null;
+      userId?: string | null;
+    }
+  | {
+      type: 'local';
+      userId: string;
+      expiresAt?: number | null;
+    };
 
 export type SessionUser = {
   id: string;
@@ -31,7 +39,7 @@ export type SessionUser = {
   role: AppRole;
   name?: string | null;
   avatarUrl?: string | null;
-  accessToken: string;
+  accessToken?: string;
   refreshToken?: string | null;
   supabase?: {
     id: string;
@@ -94,11 +102,32 @@ export async function getSessionTokens(
     return null;
   }
 
-  const tokens = parsed as SessionTokens;
-  if (!tokens.accessToken) {
-    return null;
+  const tokens = parsed as Partial<SessionTokens> & { type?: string };
+  if (tokens.type === 'supabase') {
+    if (!tokens.accessToken) {
+      return null;
+    }
+    return {
+      type: 'supabase',
+      accessToken: tokens.accessToken,
+      refreshToken: 'refreshToken' in tokens ? (tokens.refreshToken ?? null) : null,
+      expiresAt: tokens.expiresAt ?? null,
+      userId: tokens.userId ?? null,
+    } satisfies SessionTokens;
   }
-  return tokens;
+
+  if (tokens.type === 'local') {
+    if (!tokens.userId) {
+      return null;
+    }
+    return {
+      type: 'local',
+      userId: tokens.userId,
+      expiresAt: tokens.expiresAt ?? null,
+    } satisfies SessionTokens;
+  }
+
+  return null;
 }
 
 export async function createSessionCookieHeader(
@@ -107,7 +136,16 @@ export async function createSessionCookieHeader(
 ): Promise<string> {
   const cookie = getSessionCookie(context);
   const now = Math.floor(Date.now() / 1000);
-  const maxAge = tokens.expiresAt ? Math.max(tokens.expiresAt - now, 60 * 60) : 60 * 60 * 24 * 7;
+  const defaultSupabaseMaxAge = 60 * 60 * 24 * 7;
+  const defaultLocalMaxAge = 60 * 60 * 24 * 30;
+
+  const maxAge = (() => {
+    if (tokens.expiresAt) {
+      return Math.max(tokens.expiresAt - now, 60 * 60);
+    }
+    return tokens.type === 'local' ? defaultLocalMaxAge : defaultSupabaseMaxAge;
+  })();
+
   return cookie.serialize(tokens, { maxAge });
 }
 
@@ -137,13 +175,49 @@ export async function getUser(
   }
 
   try {
+    const db = getDb(context);
+
+    if (tokens.type === 'local') {
+      const dbUser = await db.query.legacyUser.findFirst({
+        where: eq(legacyUser.id, tokens.userId),
+      });
+      if (!dbUser) {
+        return null;
+      }
+
+      return {
+        id: dbUser.id,
+        email: dbUser.email,
+        role: normalizeRole(dbUser.role),
+        name: dbUser.name ?? null,
+        avatarUrl: dbUser.avatarUrl ?? null,
+      } satisfies SessionUser;
+    }
+
     const supabase = createSupabaseServerClient(context);
     const supabaseUser = await getSupabaseUser(supabase, tokens.accessToken);
+
     if (!supabaseUser) {
+      if (tokens.userId) {
+        const fallbackUser = await db.query.legacyUser.findFirst({
+          where: eq(legacyUser.id, tokens.userId),
+        });
+        if (!fallbackUser) {
+          return null;
+        }
+        return {
+          id: fallbackUser.id,
+          email: fallbackUser.email,
+          role: normalizeRole(fallbackUser.role),
+          name: fallbackUser.name ?? null,
+          avatarUrl: fallbackUser.avatarUrl ?? null,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken ?? null,
+        } satisfies SessionUser;
+      }
       return null;
     }
 
-    const db = getDb(context);
     const dbUser = await db.query.users.findFirst({ where: eq(users.id, supabaseUser.id) });
     if (!dbUser) {
       const metadataFullName = getUserMetadataString(supabaseUser, 'full_name');
@@ -163,7 +237,7 @@ export async function getUser(
           aud: supabaseUser.aud ?? undefined,
           email: supabaseUser.email ?? undefined,
         },
-      };
+      } satisfies SessionUser;
     }
 
     const metadataFullName = getUserMetadataString(supabaseUser, 'full_name');
@@ -216,8 +290,8 @@ export async function requireAdminUserId(
 
 export async function logout(request: Request, context: AppLoadContext) {
   const tokens = await getSessionTokens(request, context);
-  const supabase = createSupabaseServerClient(context);
-  if (tokens?.accessToken && tokens?.refreshToken) {
+  if (tokens?.type === 'supabase' && tokens.accessToken && tokens.refreshToken) {
+    const supabase = createSupabaseServerClient(context);
     try {
       await supabase.auth.setSession({
         access_token: tokens.accessToken,

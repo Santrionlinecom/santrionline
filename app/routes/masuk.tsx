@@ -16,11 +16,13 @@ import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { createSupabaseServerClient } from '~/utils/supabase.server';
 import { setSessionTokens } from '~/lib/session.server';
 import { getDb } from '~/db/drizzle.server';
 import { ensureWallet } from '~/lib/wallet.server';
 import { syncUserRecords } from '~/lib/user-sync.server';
+import { comparePassword } from '~/lib/crypto.server';
+import { legacyUser } from '~/db/schema';
+import { eq } from 'drizzle-orm';
 
 type ActionData =
   | {
@@ -29,19 +31,6 @@ type ActionData =
       values?: { email?: string };
     }
   | undefined;
-
-function parseSupabaseError(message: string | undefined) {
-  if (!message) return 'Email atau password tidak valid.';
-  try {
-    const parsed = JSON.parse(message);
-    if (parsed && typeof parsed === 'object' && typeof parsed.message === 'string') {
-      return parsed.message;
-    }
-  } catch (error) {
-    // ignore
-  }
-  return message;
-}
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -71,65 +60,62 @@ export async function action({ request, context }: ActionFunctionArgs) {
     );
   }
 
-  const supabase = createSupabaseServerClient(context);
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email as string,
-    password: password as string,
+  const db = getDb(context);
+  const normalizedEmail = (email as string).toLowerCase();
+  const existingUser = await db.query.legacyUser.findFirst({
+    where: eq(legacyUser.email, normalizedEmail),
   });
 
-  if (error || !data.session) {
+  if (!existingUser) {
     return json<ActionData>(
       {
-        formError: parseSupabaseError(error?.message) ?? 'Email atau password tidak valid.',
+        formError: 'Email atau password tidak valid.',
         values: { email: email as string },
       },
       { status: 400 },
     );
   }
 
-  const session = data.session;
-  const supabaseUser = session.user ?? data.user;
-
-  if (!supabaseUser || !supabaseUser.id) {
+  if (!existingUser.passwordHash) {
     return json<ActionData>(
       {
-        formError: 'Akun tidak ditemukan atau belum aktif.',
+        formError: 'Akun ini terdaftar menggunakan Google. Silakan masuk dengan Google.',
         values: { email: email as string },
       },
       { status: 400 },
     );
   }
 
-  const metadata =
-    supabaseUser.user_metadata && typeof supabaseUser.user_metadata === 'object'
-      ? (supabaseUser.user_metadata as Record<string, unknown>)
-      : {};
-  const metadataFullName =
-    typeof metadata['full_name'] === 'string' ? (metadata['full_name'] as string) : null;
-  const metadataName = typeof metadata['name'] === 'string' ? (metadata['name'] as string) : null;
-  const metadataAvatar =
-    typeof metadata['avatar_url'] === 'string' ? (metadata['avatar_url'] as string) : null;
+  const isPasswordValid = await comparePassword(password as string, existingUser.passwordHash);
+  if (!isPasswordValid) {
+    return json<ActionData>(
+      {
+        formError: 'Email atau password tidak valid.',
+        values: { email: email as string },
+      },
+      { status: 400 },
+    );
+  }
 
-  const db = getDb(context);
   await syncUserRecords({
     context,
     db,
-    userId: supabaseUser.id,
-    email: (supabaseUser.email ?? (email as string)).toLowerCase(),
-    name: metadataFullName ?? metadataName ?? supabaseUser.email ?? (email as string),
-    avatarUrl: metadataAvatar,
+    userId: existingUser.id,
+    email: normalizedEmail,
+    name: existingUser.name,
+    avatarUrl: existingUser.avatarUrl,
   });
 
   try {
-    await ensureWallet(db, supabaseUser.id);
+    await ensureWallet(db, existingUser.id);
   } catch (walletError) {
     console.warn('Failed to ensure wallet after password login', walletError);
   }
 
   const sessionCookie = await setSessionTokens(context, {
-    accessToken: session.access_token,
-    refreshToken: session.refresh_token ?? null,
-    expiresAt: session.expires_at ?? null,
+    type: 'local',
+    userId: existingUser.id,
+    expiresAt: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
   });
 
   const headers = new Headers();
