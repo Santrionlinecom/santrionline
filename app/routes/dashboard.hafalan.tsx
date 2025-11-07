@@ -1045,7 +1045,7 @@ export default function HafalanDashboard() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Progres Hafalan</h1>
         <p className="text-muted-foreground">
-          Pantau kemajuan hafalan Al-Qur&apos;an dan ilmu diniyah Anda
+          Pantau kemajuan hafalan Al-Qur'an dan ilmu diniyah Anda
         </p>
       </div>
 
@@ -1128,7 +1128,7 @@ export default function HafalanDashboard() {
           className="flex items-center gap-2"
         >
           <BookOpen className="h-4 w-4" />
-          Hafalan Al-Qur&apos;an
+          Hafalan Al-Qur'an
         </Button>
         <Button
           variant={activeTab === 'diniyah' ? 'default' : 'outline'}

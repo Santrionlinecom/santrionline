@@ -58,12 +58,12 @@ export default function TentangPage() {
       icon: Shield,
       title: 'Manhaj Aswaja',
       description:
-        'Berpegang teguh pada pemahaman Ahli Sunnah wal Jamaah dengan mengikuti 4 madzhab fiqih yang mu&apos;tabarah',
+        "Berpegang teguh pada pemahaman Ahli Sunnah wal Jamaah dengan mengikuti 4 madzhab fiqih yang mu'tabarah",
       color: 'text-green-600',
     },
     {
       icon: BookOpen,
-      title: 'Kitab Mu&apos;tabarah',
+      title: "Kitab Mu'tabarah",
       description:
         'Semua materi pembelajaran bersumber dari kitab-kitab yang telah diakui dan diajarkan oleh ulama salaf',
       color: 'text-blue-600',
@@ -137,7 +137,7 @@ export default function TentangPage() {
       name: 'Tim Ahli Syariah',
       role: 'Content Reviewer',
       description:
-        'Para ustadz dan akademisi yang memastikan setiap konten sesuai dengan manhaj Ahli Sunnah wal Jamaah dan mengacu pada kitab-kitab mu&apos;tabarah dari 4 madzhab.',
+        "Para ustadz dan akademisi yang memastikan setiap konten sesuai dengan manhaj Ahli Sunnah wal Jamaah dan mengacu pada kitab-kitab mu'tabarah dari 4 madzhab.",
       image: '/avatar-ulama.jpg',
       speciality: 'Syariah Compliance',
     },
@@ -226,7 +226,7 @@ export default function TentangPage() {
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                       <span>
-                        Menyediakan akses mudah terhadap kitab-kitab mu&apos;tabarah dari 4 madzhab
+                        Menyediakan akses mudah terhadap kitab-kitab mu'tabarah dari 4 madzhab
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -303,7 +303,7 @@ export default function TentangPage() {
               <p className="text-lg text-muted-foreground mb-8">
                 Kami menyediakan solusi lengkap untuk kebutuhan pendidikan Islam berdasarkan manhaj
                 Ahli Sunnah wal Jamaah dengan fitur-fitur yang telah dikurasi sesuai kitab-kitab
-                mu&apos;tabarah.
+                mu'tabarah.
               </p>
 
               <div className="grid gap-4">

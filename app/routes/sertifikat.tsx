@@ -220,7 +220,7 @@ export default function Sertifikat() {
         </div>
 
         <h3 className="text-2xl font-bold text-primary mb-6 uppercase">
-          SERTIFIKAT HAFALAN AL-QUR&apos;AN
+          SERTIFIKAT HAFALAN AL-QUR'AN
         </h3>
 
         <p className="text-lg mb-2">Diberikan kepada:</p>
@@ -230,7 +230,7 @@ export default function Sertifikat() {
         <p className="text-sm mb-2">NISN: {santriData.nisn}</p>
 
         <p className="text-muted-foreground mb-6 leading-relaxed">
-          Telah berhasil menyelesaikan program hafalan Al-Qur&apos;an sebanyak{' '}
+          Telah berhasil menyelesaikan program hafalan Al-Qur'an sebanyak{' '}
           <strong>{santriData.totalJuz} Juz</strong>
           dengan nilai rata-rata <strong>{santriData.totalScore}</strong> dan memenuhi standar
           kualitas yang ditetapkan oleh Santri Online
@@ -572,7 +572,7 @@ export default function Sertifikat() {
           <CardContent className="p-8 text-center">
             <h2 className="text-3xl font-bold mb-4">Dapatkan Sertifikat & Raport Anda!</h2>
             <p className="text-xl mb-6 opacity-90">
-              Dokumentasi lengkap pencapaian hafalan Al-Qur&apos;an dan pembelajaran kitab
+              Dokumentasi lengkap pencapaian hafalan Al-Qur'an dan pembelajaran kitab
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-8">
               <div className="bg-white/10 rounded-lg p-4">

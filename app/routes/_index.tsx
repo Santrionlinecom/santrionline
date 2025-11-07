@@ -212,7 +212,7 @@ export default function Index() {
       {
         icon: Palette,
         title: 'Marketplace Islami',
-        description: 'Aman jual beli karya islami sesuai adab syar&apos;i.',
+        description: "Aman jual beli karya islami sesuai adab syar'i.",
         gradient: 'from-pink-500 to-pink-600',
       },
       {
@@ -249,9 +249,9 @@ export default function Index() {
           'Sistem hafalan Al-Quran dengan metode yang telah diwariskan oleh ulama Ahli Sunnah wal Jamaah, dilengkapi dengan adab dan etika menghafal yang shahih.',
         features: [
           'Metode hafalan sesuai tuntunan ulama salaf',
-          'Panduan tajwid berdasarkan qiraat mu&apos;tabarah',
-          'Muroja&apos;ah terjadwal dengan doa dan wirid',
-          'Ijazah digital dari para qurra&apos; bersanad',
+          "Panduan tajwid berdasarkan qiraat mu'tabarah",
+          "Muroja'ah terjadwal dengan doa dan wirid",
+          "Ijazah digital dari para qurra' bersanad",
         ],
         icon: BookMarked,
       },
@@ -270,7 +270,7 @@ export default function Index() {
       pembelajaran: {
         title: 'Pembelajaran Ilmu Syariah',
         description:
-          'Akses materi pembelajaran Islam berdasarkan kitab-kitab mu&apos;tabarah dari ulama 4 madzhab dengan sistem pembelajaran komunitas antar santri.',
+          "Akses materi pembelajaran Islam berdasarkan kitab-kitab mu'tabarah dari ulama 4 madzhab dengan sistem pembelajaran komunitas antar santri.",
         features: [
           'Kajian kitab kuning dari 4 madzhab fiqih',
           'Biografi dan karya ulama Ahli Sunnah',
@@ -509,9 +509,7 @@ export default function Index() {
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
-                  <span className="text-xs sm:text-sm text-muted-foreground">
-                    Kitab Mu&apos;tabarah
-                  </span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">Kitab Mu'tabarah</span>
                 </div>
               </div>
             </div>
@@ -809,7 +807,7 @@ export default function Index() {
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
-                    <span className="text-xs sm:text-sm text-white/80">Kitab Mu&apos;tabarah</span>
+                    <span className="text-xs sm:text-sm text-white/80">Kitab Mu'tabarah</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Star className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
