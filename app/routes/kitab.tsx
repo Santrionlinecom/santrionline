@@ -204,7 +204,7 @@ export default function DaftarKitab() {
         name: 'Safinatun Najah',
         category: 'fiqih',
         description:
-          'Kitab fiqih dasar dalam mazhab Syafi&apos;i yang membahas hukum-hukum ibadah seperti thaharah, shalat, zakat, puasa, dan haji dengan penjelasan yang mudah dipahami.',
+          "Kitab fiqih dasar dalam mazhab Syafi'i yang membahas hukum-hukum ibadah seperti thaharah, shalat, zakat, puasa, dan haji dengan penjelasan yang mudah dipahami.",
         totalLessons: 15,
         completedLessons: 10,
         progress: 67,

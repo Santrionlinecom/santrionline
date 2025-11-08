@@ -209,7 +209,7 @@ export default function DashboardLayout() {
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <div className="w-full flex-1">
-            <h1 className="text-lg font-semibold">Assalamu&apos;alaikum, {user.name}! 👋</h1>
+            <h1 className="text-lg font-semibold">Assalamu'alaikum, {user.name}! 👋</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">{currentDate}</p>
           </div>
         </header>
