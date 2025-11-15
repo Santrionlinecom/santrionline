@@ -79,7 +79,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   if (!existingUser.passwordHash) {
     return json<ActionData>(
       {
-        formError: 'Akun ini terdaftar menggunakan Google. Silakan masuk dengan Google.',
+        formError: 'Email atau password tidak valid.',
         values: { email: email as string },
       },
       { status: 400 },
