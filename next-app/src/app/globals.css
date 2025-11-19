@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 min-h-screen font-sans;
+}
+
+.gradient-bg {
+  @apply bg-blue-gradient text-white;
+}
+
+.card {
+  @apply rounded-2xl shadow-lg bg-white border border-blue-50;
+}
+
+.bottom-nav {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t border-blue-100 flex justify-around py-2 text-sm font-medium;
+}
+
+.bottom-nav a {
+  @apply flex flex-col items-center text-slate-500 hover:text-blue-600 transition;
+}
