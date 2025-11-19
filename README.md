@@ -155,7 +155,7 @@ npm run deploy:full
 ## 🔄 Sinkronisasi Deployment, Domain, dan SEO
 
 - **Otomatisasi update:** Repository ini sudah disiapkan untuk proses build dan deploy otomatis melalui Cloudflare Pages. Aktifkan auto-deploy pada branch `main` sehingga setiap push terbaru akan langsung diproses dan dipublikasi tanpa perlu langkah manual tambahan.【F:CLOUDFLARE_PAGES_DEPLOYMENT.md†L27-L44】【F:DEPLOYMENT_FAQ.md†L1-L26】
-- **Integrasi domain real-time:** Konfigurasi `wrangler.toml` dan `wrangler.pages.toml` sudah menyertakan binding database, R2 storage, serta output build yang kompatibel dengan Cloudflare Pages. Setelah custom domain (`santrionline.com` dan variannya) ditambahkan lewat dashboard Pages, perubahan deployment akan otomatis tersaji di domain tersebut begitu build selesai.【F:wrangler.toml†L1-L17】【F:CLOUDFLARE_PAGES_DEPLOYMENT.md†L46-L77】【F:DEPLOYMENT_FAQ.md†L65-L116】
+- **Integrasi domain real-time:** Konfigurasi `wrangler.toml` dan `wrangler.pages.toml` menyertakan binding database, R2 storage, serta output build yang kompatibel dengan Cloudflare Pages. Tambahkan custom domain (`santrionline.com` dan variannya) melalui dashboard Pages—bukan lewat blok `routes`—agar konfigurasi Pages tetap valid saat build berjalan.【F:wrangler.toml†L1-L14】【F:CLOUDFLARE_PAGES_DEPLOYMENT.md†L46-L77】【F:DEPLOYMENT_FAQ.md†L65-L116】
 - **Kesiapan indexing Google:** Fitur komunitas dan konten di dalam aplikasi dirancang agar SEO-friendly dan dapat terindeks oleh Google secara real-time, sehingga setiap pembaruan konten akan ikut terbaca crawler setelah deployment terbaru aktif.【F:KOMUNITAS_FEATURE_DOCUMENTATION.md†L5-L29】
 
 ## 🧹 Legacy SQL
@@ -185,7 +185,7 @@ Aplikasi ini siap dijalankan di Cloudflare Pages dengan backend Functions, datab
 File sudah menyiapkan binding:
 - D1: `SANTRI_DB`
 - R2: `SANTRI_BUCKET`
-- Custom domain: `app.santrionline.com`
+Custom domain dan routing diatur di dashboard Cloudflare Pages setelah project terhubung; blok `routes` tidak digunakan untuk Pages.
 
 Jika membuat database baru jalankan:
 ```bash
