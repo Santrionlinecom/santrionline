@@ -7,12 +7,15 @@ pages_build_output_dir = "build/client"
 APP_ENV = "production"
 
 [[d1_databases]]
-binding = "DB"
-database_name = "inti-santri"
-database_id = "b42e974f-4b45-4edc-92e5-553b7c4cbf3b"
-preview_database_id = "b42e974f-4b45-4edc-92e5-553b7c4cbf3b"
+binding = "SANTRI_DB"
+database_name = "santrionline-app"
+database_id = "00000000-0000-0000-0000-000000000000"
 
 [[r2_buckets]]
-binding = "R2_BUCKET"
-bucket_name = "santri-online-files"
-preview_bucket_name = "santri-online-files-preview"
+binding = "SANTRI_BUCKET"
+bucket_name = "santrionline-app-files"
+preview_bucket_name = "santrionline-app-files-preview"
+
+[[routes]]
+pattern = "app.santrionline.com/*"
+custom_domain = true
