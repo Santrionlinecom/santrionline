@@ -4,15 +4,15 @@
 
 ### Frontend Web (Super App Shell)
 
-- **Framework**: Next.js 14 (App Router) + React 18, TypeScript.
+- **Framework**: Remix + Vite dengan React 18 dan TypeScript (menggunakan Cloudflare Pages/Workers sebagai runtime).
 - **UI Layer**: Tailwind CSS dengan komponen Headless UI/Shadcn untuk aksesibilitas.
 - **State Management**: React Query (TanStack Query) untuk pengambilan data, Zustand untuk state lokal ringan.
-- **Internasionalisasi**: next-intl dengan fallback ke bahasa Indonesia, Inggris, dan Arab.
-- **Analitik**: Integrasi Segment/Amplitude SDK + Vercel Analytics untuk event kustom per modul.
+- **Internasionalisasi**: remix-i18next atau solusi i18n berbasis Remix dengan fallback ke bahasa Indonesia, Inggris, dan Arab.
+- **Analitik**: Integrasi Segment/Amplitude SDK + Cloudflare Web Analytics/PostHog untuk event kustom per modul.
 
 ### Mobile
 
-- **Framework**: Expo (React Native) menggunakan monorepo dengan Next.js untuk sharing komponen & logika.
+- **Framework**: Expo (React Native) dengan monorepo yang berbagi komponen dan utilitas melalui paket bersama lintas platform.
 - **Distribusi**: Expo EAS untuk build Android/iOS.
 
 ### Backend & API
@@ -26,7 +26,7 @@
 
 ### Infrastruktur
 
-- **Deployment**: Vercel untuk Next.js, Fly.io/Render/Kubernetes untuk layanan NestJS & worker.
+- **Deployment**: Cloudflare Pages/Workers untuk aplikasi Remix web, Fly.io/Render/Kubernetes untuk layanan NestJS & worker.
 - **API Gateway**: Kong/NGINX Ingress dengan observabilitas (OpenTelemetry, Grafana, Prometheus).
 - **CI/CD**: GitHub Actions dengan lint, test, preview deploy; Infrastructure-as-Code (Terraform) untuk environment konsisten.
 
