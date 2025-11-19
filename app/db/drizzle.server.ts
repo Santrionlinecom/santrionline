@@ -4,7 +4,8 @@ import * as schema from './schema';
 import { log, recordQuery, maskObjectPII } from '~/lib/logger';
 
 export function getDb(context: AppLoadContext) {
-  const database = (context as { cloudflare?: { env?: { DB?: D1Database } } })?.cloudflare?.env?.DB;
+  const env = (context as { cloudflare?: { env?: { DB?: D1Database; SANTRI_DB?: D1Database } } })?.cloudflare?.env;
+  const database = env?.DB ?? env?.SANTRI_DB;
   if (!database) {
     throw new Error('Database not found in context. Make sure D1 is configured properly.');
   }

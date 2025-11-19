@@ -2,12 +2,15 @@
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Env {
-  DB: D1Database;
-  R2_BUCKET: R2Bucket;
+  SANTRI_DB: D1Database;
+  SANTRI_BUCKET: R2Bucket;
+  DB?: D1Database;
+  R2_BUCKET?: R2Bucket;
 
   // Environment variables
   APP_ENV: 'development' | 'production';
   SESSION_SECRET: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
+  MOONWA_API_KEY: string;
 }
