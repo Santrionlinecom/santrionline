@@ -169,3 +169,31 @@ Lihat `CONTRIBUTING.md`.
 ## 📝 Lisensi
 
 MIT – lihat `LICENSE`.
+
+## 🚀 Next.js 14 Cloudflare Pages App (app.santrionline.com)
+
+Folder **next-app/** berisi implementasi Next.js 14 (App Router) + Tailwind + Prisma untuk D1 + NextAuth (Google & Credentials) yang siap deploy ke Cloudflare Pages/Functions.
+
+### Menjalankan Lokal
+1. `cd next-app`
+2. `npm install`
+3. `cp ../.env.example .env` lalu isi variabel (DATABASE_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, dll).
+4. `npx prisma generate`
+5. `npm run dev`
+
+### Build & Deploy Cloudflare Pages
+- Build: `npm run cf:build` (menggunakan `@cloudflare/next-on-pages`, output ke `.vercel/output/static`).
+- Preview: `npm run cf:preview` (wrangler pages dev, memuat fungsi edge + binding D1/R2).
+- Deploy via Cloudflare Pages dengan konfigurasi:
+  - **Build command**: `npm run cf:build`
+  - **Build output dir**: `next-app/.vercel/output/static`
+  - **D1 binding**: `DB` (lihat `wrangler.toml`)
+  - **R2 binding**: `R2_BUCKET`
+
+### DNS CNAME
+Untuk mengarahkan `app.santrionline.com` ke Pages:
+- Type: **CNAME**
+- Name: **app**
+- Target: `<project-name>.pages.dev`
+
+File `next-app/public/CNAME` juga disiapkan agar Pages otomatis mengenali domain kustom.

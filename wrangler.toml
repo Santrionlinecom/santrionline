@@ -1,9 +1,13 @@
-name = "santrionline"
+name = "santrionline-next"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = "build/client"
+pages_build_output_dir = "next-app/.vercel/output/static"
+
+[build]
+command = "cd next-app && npm install && npm run cf:build"
 
 [vars]
+NEXT_PUBLIC_APP_URL = "https://app.santrionline.com"
 APP_ENV = "production"
 ADMIN_EMAILS = "admin@santrionline.com"
 
